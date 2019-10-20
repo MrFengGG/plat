@@ -1,0 +1,22 @@
+plus:
+  jdbc:
+    data-source-list:
+      - name: datasource1
+        driverClassName: org.mysql.jdbc.Driver
+        url: jdbc:mysql://192.168.1.7:3306/home_plat?zeroDateTimeBehavior=convertToNull
+        username: root
+        password: 321321
+    enable-sharding: true
+    default-data-source: datasource1
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8000/eureka
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}:@project.version@
+server:
+  port: 9000
+resource:
+  check-token-url: http://127.0.0.1:9000/auth/checkToken
+  login-url: http://www.baidu.com

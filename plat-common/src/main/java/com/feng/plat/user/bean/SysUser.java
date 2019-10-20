@@ -1,0 +1,59 @@
+package com.feng.plat.user.bean;
+
+import com.feng.home.common.support.ModelMapping;
+import com.feng.home.common.support.NoDbField;
+import com.feng.plat.auth.bean.Role;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
+import java.util.Collection;
+import java.util.Date;
+
+@Builder
+@Data
+@ModelMapping(logicTable = "sys_user")
+@AllArgsConstructor
+@NoArgsConstructor
+public class SysUser {
+    private int id;
+    //用户名
+    @NotNull(message = "用户名不能为空!")
+    private String username;
+    //密码
+    @NotNull(message = "密码不能为空!")
+    private String password;
+    //名字
+    private String realName;
+    //昵称
+    private String nickName;
+    //电话
+    private String mobile;
+    //邮箱
+    private String email;
+    //头像
+    private String headImage;
+    //生日
+    private Date birthday;
+    //上次登录时间
+    private Date lastLoginTime;
+    //上次登录ip
+    private String lastLoginIp;
+    //封禁开始时间
+    private Date expireStartTime;
+    //封禁结束时间
+    private Date expireEndTime;
+    //账号创建时间
+    private Date createTime;
+    //账号更新时间
+    private Date updateTime;
+    //微信openid
+    private String wxOpenId;
+    //账号状态
+    private int status;
+    //权限
+    @NoDbField
+    private Collection<String> roles;
+}
