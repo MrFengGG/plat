@@ -25,7 +25,7 @@ public class AuthController {
     private SysUserService sysUserService;
 
     @RequestMapping(value = "/accessToken")
-    public Token getToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public Token accessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         AssertUtil.assertTrue(StringUtil.isNotEmpty(username) && StringUtil.isNotEmpty(password), "用户名和密码不能为空");

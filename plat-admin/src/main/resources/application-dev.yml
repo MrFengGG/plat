@@ -20,3 +20,5 @@ server:
 resource:
   check-token-url: http://127.0.0.1:9000/auth/checkToken
   login-url: http://www.baidu.com
+  white-list-role:
+    - S_ADMIN

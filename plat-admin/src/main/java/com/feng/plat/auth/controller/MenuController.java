@@ -2,7 +2,6 @@ package com.feng.plat.auth.controller;
 
 import com.feng.plat.auth.base.TokenStore;
 import com.feng.plat.auth.bean.Menu;
-import com.feng.plat.auth.bean.Role;
 import com.feng.plat.auth.service.MenuService;
 import com.feng.plat.user.bean.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +31,10 @@ public class MenuController {
         String token = request.getHeader("token");
         Optional<SysUser> user = tokenStore.tokenToMessage(token);
         return user.map(user1 -> menuService.getMenuListByRoleList(user1.getRoles().stream().collect(toList()))).orElse(new LinkedList<>());
+    }
+
+    @RequestMapping(value = "save", method = RequestMethod.PUT)
+    public void putMenu(Menu menu){
+        menuService.saveMenu(menu);
     }
 }

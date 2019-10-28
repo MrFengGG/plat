@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class MenuRoleMappingDao extends BaseDao {
@@ -24,5 +25,14 @@ public class MenuRoleMappingDao extends BaseDao {
                 .whereIn("role_code", roleList)
                 .build();
         return this.queryForAllBean(MenuRoleMapping.class, sqlResult.sql, sqlResult.param);
+    }
+
+    public Optional<MenuRoleMapping> findFirst(String roleCode, String menuCode){
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "menu_role")
+                .selectFor("*")
+                .whereEqual("role_code", roleCode)
+                .whereEqual("menu_code", menuCode)
+                .build();
+        return this.findFirstBean(MenuRoleMapping.class, sqlResult.sql, sqlResult.param);
     }
 }

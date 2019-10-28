@@ -1,12 +1,13 @@
 package com.feng.plat.auth.bean;
 
-import com.feng.home.common.support.ModelMapping;
-import com.feng.home.common.support.NoDbField;
+import com.feng.home.common.resource.ModelMapping;
+import com.feng.home.common.resource.NoDbField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class Resource {
     //资源id
     private int id;
     //资源代码
+    @NotNull(message = "资源代码不能为空!")
     private String code;
     //资源名称
     private String resourceName;

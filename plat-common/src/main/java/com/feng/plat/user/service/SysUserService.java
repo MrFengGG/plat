@@ -2,6 +2,7 @@ package com.feng.plat.user.service;
 
 import com.feng.home.common.common.PasswordUtil;
 import com.feng.home.common.pagination.Page;
+import com.feng.home.plat.user.enums.UserStatusEnum;
 import com.feng.plat.auth.bean.Role;
 import com.feng.plat.auth.service.RoleService;
 import com.feng.plat.user.bean.SysUser;
@@ -56,6 +57,7 @@ public class SysUserService{
 
     public void addUser(SysUser user) {
         user.setPassword(PasswordUtil.encode(user.getPassword()));
+        user.setStatus(UserStatusEnum.NORMAL.getCode());
         sysUserDao.saveBean(user);
     }
 

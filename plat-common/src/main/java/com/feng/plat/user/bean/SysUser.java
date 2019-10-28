@@ -1,13 +1,13 @@
 package com.feng.plat.user.bean;
 
-import com.feng.home.common.support.ModelMapping;
-import com.feng.home.common.support.NoDbField;
-import com.feng.plat.auth.bean.Role;
+import com.feng.home.common.resource.ModelMapping;
+import com.feng.home.common.resource.NoDbField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Date;
@@ -32,6 +32,7 @@ public class SysUser {
     //电话
     private String mobile;
     //邮箱
+    @Email
     private String email;
     //头像
     private String headImage;
