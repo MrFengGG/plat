@@ -1,7 +1,6 @@
 package com.feng.plat.auth.bean;
 
-import com.feng.home.common.resource.ModelMapping;
-import com.feng.home.common.resource.NoDbField;
+import com.feng.home.common.bean.NoConvertField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,13 +14,14 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ModelMapping(logicTable = "menu")
 public class Menu {
     private int id;
     @NotNull(message = "菜单代码不能为空!")
     private String code;
     @NotNull(message = "菜单类型不能为空!")
-    private int type;
+    private int menuType;
+    @NotNull(message = "所属菜单组不能为空")
+    private String menuGroupCode;
 
     private String icon;
 
@@ -38,19 +38,17 @@ public class Menu {
 
     private Date updateTime;
 
+    @NotNull(message = "页面组件不能为空")
     private String componentName;
 
     private String componentParam;
 
-    @NotNull(message = "页面组件不能为空")
-    private String component;
-
-    @NoDbField
+    @NoConvertField
     private Resource resource;
 
-    @NoDbField
+    @NoConvertField
     private List<Role> needRoles;
 
-    @NoDbField
+    @NoConvertField
     private List<Menu> childList;
 }

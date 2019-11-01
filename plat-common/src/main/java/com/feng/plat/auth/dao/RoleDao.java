@@ -1,7 +1,8 @@
 package com.feng.plat.auth.dao;
 
-import com.feng.home.common.base.BaseDao;
-import com.feng.home.common.pagination.Page;
+import com.feng.home.common.jdbc.base.BaseMappingDao;
+import com.feng.home.common.jdbc.base.DaoMapping;
+import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.sql.SqlBuilder;
 import com.feng.home.plat.user.bean.RoleQueryCondition;
 import com.feng.plat.auth.bean.Role;
@@ -14,15 +15,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class RoleDao extends BaseDao {
+@DaoMapping(logicTable = "role")
+public class RoleDao extends BaseMappingDao{
 
     @Resource
     @Override
-    protected void setTemplate(JdbcTemplate template) {
-        this.template = template;
+    protected void setJdbcTemplate(JdbcTemplate template) {
+        this.jdbcTemplate = template;
     }
 
-    public Optional<Role> findRoleByCode(String roleCode) {
+    public Optional<Role> findByCode(String roleCode) {
         SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "role")
                 .selectFor("*")
                 .whereEqual("code", roleCode)
@@ -30,7 +32,7 @@ public class RoleDao extends BaseDao {
         return this.findFirstBean(Role.class, sqlResult.sql, sqlResult.param);
     }
 
-    public List<Role> getRoleListByCodeList(Collection<String> roleCodeList) {
+    public List<Role> getListByCodeList(Collection<String> roleCodeList) {
         SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "role")
                 .selectFor("*")
                 .whereIn("code", roleCodeList)

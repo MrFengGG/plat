@@ -1,6 +1,7 @@
 package com.feng.plat.user.dao;
 
-import com.feng.home.common.base.BaseDao;
+import com.feng.home.common.jdbc.base.BaseMappingDao;
+import com.feng.home.common.jdbc.base.DaoMapping;
 import com.feng.home.common.sql.SqlBuilder;
 import com.feng.plat.user.bean.UserRoleMapping;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class UserRoleMappingDao extends BaseDao {
+@DaoMapping(logicTable = "user_role")
+public class UserRoleMappingDao extends BaseMappingDao {
 
     public List<UserRoleMapping> getUserRoleMappingListByUserId(int user_id) {
         SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "user_role")
@@ -40,7 +42,7 @@ public class UserRoleMappingDao extends BaseDao {
 
     @Resource
     @Override
-    protected void setTemplate(JdbcTemplate template) {
-        this.template = template;
+    protected void setJdbcTemplate(JdbcTemplate template) {
+        this.jdbcTemplate = template;
     }
 }

@@ -1,7 +1,6 @@
 package com.feng.plat.user.bean;
 
-import com.feng.home.common.resource.ModelMapping;
-import com.feng.home.common.resource.NoDbField;
+import com.feng.home.common.bean.NoConvertField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +13,6 @@ import java.util.Date;
 
 @Builder
 @Data
-@ModelMapping(logicTable = "sys_user")
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysUser {
@@ -53,8 +51,8 @@ public class SysUser {
     //微信openid
     private String wxOpenId;
     //账号状态
-    private int status;
+    private Integer status;
     //权限
-    @NoDbField
+    @NoConvertField
     private Collection<String> roles;
 }

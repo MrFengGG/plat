@@ -1,6 +1,5 @@
 package com.feng.plat.user.bean;
 
-import com.feng.home.common.resource.ModelMapping;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +14,6 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ModelMapping(logicTable = "user_role")
 public class UserRoleMapping {
     @NotNull(message = "角色代码不能为空!")
     private String roleCode;

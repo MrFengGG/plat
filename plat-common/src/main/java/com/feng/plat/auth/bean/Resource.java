@@ -1,7 +1,6 @@
 package com.feng.plat.auth.bean;
 
-import com.feng.home.common.resource.ModelMapping;
-import com.feng.home.common.resource.NoDbField;
+import com.feng.home.common.bean.NoConvertField;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +19,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ModelMapping(logicTable = "resource")
 public class Resource {
     //资源id
     private int id;
@@ -42,6 +40,6 @@ public class Resource {
     //更新时间
     private Date updateTime;
     //可访问的角色
-    @NoDbField
+    @NoConvertField
     private List<Role> roleList;
 }

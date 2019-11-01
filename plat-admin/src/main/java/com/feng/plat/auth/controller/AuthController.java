@@ -6,7 +6,6 @@ import com.feng.plat.auth.base.Token;
 import com.feng.plat.auth.base.TokenStore;
 import com.feng.plat.user.bean.SysUser;
 import com.feng.plat.user.service.SysUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,7 +20,7 @@ public class AuthController {
     @Resource
     private TokenStore<SysUser> tokenStore;
 
-    @Autowired
+    @Resource
     private SysUserService sysUserService;
 
     @RequestMapping(value = "/accessToken")

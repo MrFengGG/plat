@@ -41,8 +41,9 @@ create table if not exists home_plat.role(
 
 create table if not exists home_plat.menu(
 	id int not null primary key auto_increment comment 'id',
+	menu_group_code varchar(256) not null comment '项目组',
     code varchar(256) unique not null comment '菜单代码',
-    type int not null comment '菜单类型,0:子菜单，1：父菜单',
+    menu_type int not null comment '菜单类型,0:子菜单，1：父菜单',
     icon varchar(256) comment '图标',
     menu_name varchar(30) not null comment '菜单名称',
     menu_desc varchar(256) comment '菜单描述',
@@ -53,6 +54,13 @@ create table if not exists home_plat.menu(
     component_name varchar(256) comment '组件名称',
     component_param varchar(256) comment '组件参数'
 );
+
+create table if not exists home_plat.menu_group(
+	id int not null primary key auto_increment comment 'id',
+	group_name varchar(256) not null comment '菜单组名称',
+	code varchar(30) not null comment '菜单组代码',
+	group_desc varchar(256) comment '菜单组描述'
+)
 
 create table if not exists home_plat.resource_role(
     id int not null primary key auto_increment comment 'id',
@@ -78,6 +86,6 @@ create table if not exists home_plat.menu_role(
 
 insert into home_plat.sys_user(username,password) values ('admin','$2a$10$o0A/HBA7xcfMUSSEcYfJrOp4eUIlkNq/nNP.45X2shWdoqjufQQlW');
 
-insert into home_plat.role(code,rolename,role_desc, create_time) values('S_ADMIN','超级管理员','拥有无上权力的皇帝', now())
+insert into home_plat.role(code,rolename,role_desc, create_time) values('S_ADMIN','超级管理员','拥有无上权力的皇帝', now());
 
 insert into home_plat.user_role(role_code, user_id, create_time) values('S_ADMIN','1', now());

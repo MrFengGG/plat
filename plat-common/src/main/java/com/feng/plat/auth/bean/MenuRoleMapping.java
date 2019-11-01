@@ -1,6 +1,5 @@
 package com.feng.plat.auth.bean;
 
-import com.feng.home.common.resource.ModelMapping;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +12,6 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ModelMapping(logicTable = "menuRole")
 public class MenuRoleMapping {
     private int id;
     @NotNull(message = "角色代码不能为空!")

@@ -1,23 +1,23 @@
 package com.feng.plat.user.controller;
 
-import com.feng.home.common.pagination.Page;
+import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.resource.annotation.ResourceMeta;
 import com.feng.home.common.validate.ValidationUtil;
 import com.feng.plat.user.bean.SysUser;
 import com.feng.home.plat.user.bean.UserQueryCondition;
 import com.feng.plat.user.service.SysUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.sql.SQLException;
 
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
-    @Autowired
+    @Resource
     private SysUserService sysUserService;
 
     @ResourceMeta(code = "USER_PAGE_QUERY", resourceName = "分页查询用户", url = "/user/query", group = "plat", enableAuthCheck = true)
@@ -34,6 +34,6 @@ public class UserController {
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public void add(SysUser sysUser) throws SQLException {
         ValidationUtil.validate(sysUser);
-        sysUserService.addUser(sysUser);
+        sysUserService.save(sysUser);
     }
 }

@@ -1,8 +1,9 @@
 package com.feng.plat.user.dao;
 
 
-import com.feng.home.common.base.BaseDao;
-import com.feng.home.common.pagination.Page;
+import com.feng.home.common.jdbc.base.BaseMappingDao;
+import com.feng.home.common.jdbc.base.DaoMapping;
+import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.sql.SqlBuilder;
 import com.feng.plat.user.bean.SysUser;
 import com.feng.home.plat.user.bean.UserQueryCondition;
@@ -14,11 +15,12 @@ import java.sql.SQLException;
 import java.util.Optional;
 
 @Component
-public class SysUserDao extends BaseDao {
+@DaoMapping(logicTable = "sys_user")
+public class SysUserDao extends BaseMappingDao {
     @Override
     @Resource
-    protected void setTemplate(JdbcTemplate template) {
-        this.template = template;
+    protected void setJdbcTemplate(JdbcTemplate template) {
+        this.jdbcTemplate = template;
     }
 
     public Optional<SysUser> findUserByUsername(String username){

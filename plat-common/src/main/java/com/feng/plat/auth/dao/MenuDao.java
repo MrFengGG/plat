@@ -1,6 +1,7 @@
 package com.feng.plat.auth.dao;
 
-import com.feng.home.common.base.BaseDao;
+import com.feng.home.common.jdbc.base.BaseMappingDao;
+import com.feng.home.common.jdbc.base.DaoMapping;
 import com.feng.home.common.sql.SqlBuilder;
 import com.feng.plat.auth.bean.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,12 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class MenuDao extends BaseDao {
+@DaoMapping(logicTable = "menu")
+public class MenuDao extends BaseMappingDao{
 
     @Override
     @Autowired
-    protected void setTemplate(JdbcTemplate jdbcTemplate) {
-        this.template = jdbcTemplate;
+    protected void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     /**
@@ -24,20 +26,35 @@ public class MenuDao extends BaseDao {
      * @param menuCodeList
      * @return
      */
-    public List<Menu> getMenuListByCodeList(List<String> menuCodeList){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "menu")
+    public List<Menu> getListByGroupCodeList(String group, List<String> menuCodeList){
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
                 .selectFor("*")
+                .whereEqual("menu_group", group)
                 .whereIn("code", menuCodeList)
                 .build();
         return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
     }
 
     /**
+     * 根据菜单代码列表查询菜单
+     * @param menuCodeList
+     * @return
+     */
+    public List<Menu> getListByCodeList(List<String> menuCodeList){
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
+                .selectFor("*")
+                .whereIn("code", menuCodeList)
+                .build();
+        return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
+    }
+
+
+    /**
      * 获取所有菜单
      * @return
      */
     public List<Menu> getAllMenuList(){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "menu")
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
                 .selectFor("*")
                 .build();
         return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
@@ -48,8 +65,8 @@ public class MenuDao extends BaseDao {
      * @param code
      * @return
      */
-    public Optional<Menu> findMenuByCode(String code){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "menu")
+    public Optional<Menu> findByCode(String code){
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
                 .selectFor("*")
                 .whereEqual("code", code)
                 .build();
@@ -61,9 +78,9 @@ public class MenuDao extends BaseDao {
      * @param code
      */
     public void removeByCode(String code){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.REMOVE, "menu")
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.REMOVE, this.getTable())
                 .whereEqual("code", code)
                 .build();
-        this.update(sqlResult.sql, sqlResult.param);
+        this.jdbcTemplate.update(sqlResult.sql, sqlResult.param);
     }
 }
