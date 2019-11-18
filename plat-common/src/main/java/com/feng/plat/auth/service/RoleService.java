@@ -1,8 +1,8 @@
 package com.feng.plat.auth.service;
 
 import com.feng.home.common.jdbc.pagination.Page;
-import com.feng.home.plat.user.bean.RoleQueryCondition;
-import com.feng.plat.auth.bean.Role;
+import com.feng.home.plat.user.bean.condition.RoleQueryCondition;
+import com.feng.home.plat.auth.bean.Role;
 
 import java.util.Collection;
 import java.util.List;

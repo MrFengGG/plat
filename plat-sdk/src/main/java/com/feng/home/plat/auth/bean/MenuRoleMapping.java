@@ -1,4 +1,4 @@
-package com.feng.plat.user.bean;
+package com.feng.home.plat.auth.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,17 +6,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
-/**
- * 会员->角色映射
- */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRoleMapping {
+public class MenuRoleMapping {
+    private int id;
     @NotNull(message = "角色代码不能为空!")
     private String roleCode;
-    @NotNull(message = "用户id不能为空!")
-    private int userId;
+    @NotNull(message = "菜单代码不能为空!")
+    private String menuCode;
+
+    private Date createTime;
 }

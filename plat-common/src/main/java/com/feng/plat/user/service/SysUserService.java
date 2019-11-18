@@ -1,8 +1,8 @@
 package com.feng.plat.user.service;
 
 import com.feng.home.common.jdbc.pagination.Page;
-import com.feng.home.plat.user.bean.UserQueryCondition;
-import com.feng.plat.user.bean.SysUser;
+import com.feng.home.plat.user.bean.condition.UserQueryCondition;
+import com.feng.home.plat.user.bean.SysUser;
 
 import java.sql.SQLException;
 import java.util.Optional;

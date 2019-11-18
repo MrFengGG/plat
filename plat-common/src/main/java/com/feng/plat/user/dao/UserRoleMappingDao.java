@@ -3,7 +3,7 @@ package com.feng.plat.user.dao;
 import com.feng.home.common.jdbc.base.BaseMappingDao;
 import com.feng.home.common.jdbc.base.DaoMapping;
 import com.feng.home.common.sql.SqlBuilder;
-import com.feng.plat.user.bean.UserRoleMapping;
+import com.feng.home.plat.user.bean.UserRoleMapping;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 

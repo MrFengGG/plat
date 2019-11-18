@@ -1,4 +1,4 @@
-package com.feng.plat.user.bean;
+package com.feng.home.plat.user.bean;
 
 import com.feng.home.common.bean.NoConvertField;
 import lombok.AllArgsConstructor;

@@ -2,7 +2,7 @@ package com.feng.plat.auth.base;
 
 
 import com.feng.home.common.common.UIDUtils;
-import com.feng.plat.user.bean.SysUser;
+import com.feng.home.plat.user.bean.SysUser;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;

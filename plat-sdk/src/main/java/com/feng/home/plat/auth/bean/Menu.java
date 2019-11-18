@@ -1,4 +1,4 @@
-package com.feng.plat.auth.bean;
+package com.feng.home.plat.auth.bean;
 
 import com.feng.home.common.bean.NoConvertField;
 import lombok.AllArgsConstructor;
@@ -28,15 +28,17 @@ public class Menu {
     @NotNull(message = "菜单名称不能为空!")
     private String menuName;
 
-    private String resource_code;
+    private String resourceCode;
 
-    private String menu_desc;
+    private String menuDesc;
 
     private String parentCode;
 
     private Date createTime;
 
     private Date updateTime;
+
+    private String menuPath;
 
     @NotNull(message = "页面组件不能为空")
     private String componentName;

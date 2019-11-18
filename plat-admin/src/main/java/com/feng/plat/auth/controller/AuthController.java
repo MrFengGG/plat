@@ -4,9 +4,10 @@ import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.validate.AssertUtil;
 import com.feng.plat.auth.base.Token;
 import com.feng.plat.auth.base.TokenStore;
-import com.feng.plat.user.bean.SysUser;
+import com.feng.home.plat.user.bean.SysUser;
 import com.feng.plat.user.service.SysUserService;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -23,17 +24,11 @@ public class AuthController {
     @Resource
     private SysUserService sysUserService;
 
-    @RequestMapping(value = "/accessToken")
-    public Token accessToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+    @RequestMapping(value = "/accessToken", method = RequestMethod.GET)
+    public Token accessToken(String username, String password){
         AssertUtil.assertTrue(StringUtil.isNotEmpty(username) && StringUtil.isNotEmpty(password), "用户名和密码不能为空");
-        String originUrl = request.getParameter("originUrl");
         SysUser sysUser = sysUserService.login(username, password);
         Token token = tokenStore.messageToToken(sysUser);
-        if(StringUtil.isNotEmpty(originUrl)) {
-            response.sendRedirect(originUrl + "?" + token.getToken());
-        }
         return token;
     }
 

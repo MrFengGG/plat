@@ -1,10 +1,11 @@
 package com.feng.plat.auth.controller;
 
+import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.plat.auth.base.TokenStore;
-import com.feng.plat.auth.bean.Menu;
-import com.feng.plat.auth.bean.MenuGroup;
+import com.feng.home.plat.auth.bean.Menu;
+import com.feng.home.plat.auth.bean.MenuGroup;
 import com.feng.plat.auth.service.MenuService;
-import com.feng.plat.user.bean.SysUser;
+import com.feng.home.plat.user.bean.SysUser;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,8 +42,16 @@ public class MenuController {
         return userOptional.map(user -> menuService.getMenuGroupListByRoleList(new ArrayList<String>(user.getRoles()))).orElse(new LinkedList<>());
     }
 
+    @RequestMapping(value = "/pageQueryMenu", method = RequestMethod.POST)
+    public Page<Menu> pageQuery(HttpServletRequest request){
+        String token = request.getHeader("token");
+        Optional<SysUser> userOptional = tokenStore.tokenToMessage(token);
+        return userOptional.map(user -> menuService.pageQuery(new ArrayList<String>(user.getRoles()), null, null)).orElse(new Page<>());
+    }
+
     @RequestMapping(value = "save", method = RequestMethod.PUT)
     public void putMenu(Menu menu){
         menuService.save(menu);
     }
+
 }

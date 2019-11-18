@@ -2,8 +2,10 @@ package com.feng.plat.auth.dao;
 
 import com.feng.home.common.jdbc.base.BaseMappingDao;
 import com.feng.home.common.jdbc.base.DaoMapping;
+import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.sql.SqlBuilder;
-import com.feng.plat.auth.bean.Menu;
+import com.feng.home.plat.auth.bean.Menu;
+import com.feng.home.plat.auth.bean.condition.MenuQueryCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -29,7 +31,7 @@ public class MenuDao extends BaseMappingDao{
     public List<Menu> getListByGroupCodeList(String group, List<String> menuCodeList){
         SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
                 .selectFor("*")
-                .whereEqual("menu_group", group)
+                .whereEqual("menu_group_code", group)
                 .whereIn("code", menuCodeList)
                 .build();
         return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
@@ -46,6 +48,13 @@ public class MenuDao extends BaseMappingDao{
                 .whereIn("code", menuCodeList)
                 .build();
         return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
+    }
+
+    public Page<Menu> pageQuery(MenuQueryCondition menuQueryCondition, Page<Menu> page){
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
+                .selectFor("*")
+                .build();
+        return this.queryForPaginationBean(page, Menu.class, sqlResult.sql, sqlResult.param);
     }
 
 

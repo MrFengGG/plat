@@ -1,4 +1,4 @@
-package com.feng.plat.auth.bean;
+package com.feng.home.plat.auth.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,12 +12,16 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuRoleMapping {
+public class Role {
     private int id;
     @NotNull(message = "角色代码不能为空!")
-    private String roleCode;
-    @NotNull(message = "菜单代码不能为空!")
-    private String menuCode;
+    private String code;
+    @NotNull(message = "角色名称不能为空!")
+    private String roleName;
+
+    private String roleDesc;
 
     private Date createTime;
+
+    private Date updateTime;
 }

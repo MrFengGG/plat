@@ -1,4 +1,4 @@
-package com.feng.plat.auth.bean;
+package com.feng.home.plat.auth.bean;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

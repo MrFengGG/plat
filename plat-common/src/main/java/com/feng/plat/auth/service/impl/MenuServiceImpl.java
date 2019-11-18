@@ -1,10 +1,12 @@
 package com.feng.plat.auth.service.impl;
 
 import com.feng.home.common.common.StringUtil;
+import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.validate.AssertUtil;
-import com.feng.plat.auth.bean.Menu;
-import com.feng.plat.auth.bean.MenuGroup;
-import com.feng.plat.auth.bean.MenuRoleMapping;
+import com.feng.home.plat.auth.bean.Menu;
+import com.feng.home.plat.auth.bean.MenuGroup;
+import com.feng.home.plat.auth.bean.MenuRoleMapping;
+import com.feng.home.plat.auth.bean.condition.MenuQueryCondition;
 import com.feng.plat.auth.dao.MenuDao;
 import com.feng.plat.auth.dao.MenuGroupDao;
 import com.feng.plat.auth.dao.MenuRoleMappingDao;
@@ -13,6 +15,7 @@ import com.feng.plat.auth.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -52,6 +55,14 @@ public class MenuServiceImpl implements MenuService {
         List<String> groupCodeList = jdbcMenuDao.getListByCodeList(menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode)
                 .collect(toList())).stream().map(Menu::getMenuGroupCode).collect(toList());
         return jdbcMenuGroupDao.getListByCodeList(groupCodeList);
+    }
+
+    @Override
+    public Page<Menu> pageQuery(List<String> roleCodeList, MenuQueryCondition condition, Page<Menu> page){
+        List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
+        List<String> menuCodeList = menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode).collect(toList());
+        condition.setMenuCodeList(menuCodeList);
+        return jdbcMenuDao.pageQuery(condition, page);
     }
 
     /**

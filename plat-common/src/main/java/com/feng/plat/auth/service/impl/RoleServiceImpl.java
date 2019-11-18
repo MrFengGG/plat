@@ -2,8 +2,8 @@ package com.feng.plat.auth.service.impl;
 
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.validate.AssertUtil;
-import com.feng.home.plat.user.bean.RoleQueryCondition;
-import com.feng.plat.auth.bean.Role;
+import com.feng.home.plat.user.bean.condition.RoleQueryCondition;
+import com.feng.home.plat.auth.bean.Role;
 import com.feng.plat.auth.dao.RoleDao;
 import com.feng.plat.auth.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;

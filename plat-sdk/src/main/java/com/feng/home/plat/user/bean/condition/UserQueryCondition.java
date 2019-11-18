@@ -1,4 +1,4 @@
-package com.feng.home.plat.user.bean;
+package com.feng.home.plat.user.bean.condition;
 
 import com.feng.home.plat.user.enums.UserStatusEnum;
 import lombok.AllArgsConstructor;

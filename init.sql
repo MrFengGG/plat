@@ -1,3 +1,4 @@
+create database home_plat;
 create table if not exists home_plat.sys_user(
     id int not null primary key auto_increment comment 'id',
     username varchar(50) not null unique comment '用户名',
@@ -41,16 +42,17 @@ create table if not exists home_plat.role(
 
 create table if not exists home_plat.menu(
 	id int not null primary key auto_increment comment 'id',
+	code varchar(256) unique not null comment '菜单代码',
+	menu_type int not null comment '菜单类型,0:子菜单，1：父菜单',
 	menu_group_code varchar(256) not null comment '项目组',
-    code varchar(256) unique not null comment '菜单代码',
-    menu_type int not null comment '菜单类型,0:子菜单，1：父菜单',
     icon varchar(256) comment '图标',
     menu_name varchar(30) not null comment '菜单名称',
+    resource_code varchar(256) comment '资源code',
     menu_desc varchar(256) comment '菜单描述',
     parent_code varchar(256) comment '父级菜单',
-    resource_code varchar(256) comment '资源code',
     create_time timestamp comment '创建时间',
     update_time timestamp comment '修改时间',
+    menu_path varchar(256) comment'菜单路径',
     component_name varchar(256) comment '组件名称',
     component_param varchar(256) comment '组件参数'
 );
