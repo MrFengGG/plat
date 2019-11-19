@@ -95,7 +95,9 @@ insert into home_plat.user_role(role_code, user_id, create_time) values('S_ADMIN
 insert into home_plat.menu_group(group_name, code, group_desc) values('管理平台','plat', '管理平台');
 
 insert into home_plat.menu(code, menu_type, menu_group_code, icon, menu_name, menu_desc, create_time)
-values("menu", 1, 'plat', 'fa fa-cog', '菜单管理', '菜单管理父级菜单', now())
+values('menu', 1, 'plat', 'fa fa-cog', '菜单管理', '菜单管理父级菜单', now())
 
 insert into home_plat.menu(code, menu_type, menu_group_code, icon, menu_name, menu_desc, parent_code, create_time, menu_path, component_name, component_param)
 values('menu_edit', 0, 'plat', 'fa fa-pencil-square-o','菜单编辑器','用于编辑新的菜单', 'menu', now(), '/menu/edit', 'MenuEditPage','{}')
+
+insert into home_plat.

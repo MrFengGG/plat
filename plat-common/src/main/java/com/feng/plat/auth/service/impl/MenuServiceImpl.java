@@ -16,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -39,8 +42,13 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<Menu> getListByRoleList(String group, List<String> roleCodeList){
-        List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
-        List<Menu> menuList = jdbcMenuDao.getListByGroupCodeList(group, menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode).collect(toList()));
+        List<Menu> menuList = new LinkedList<>();
+        if(new HashSet<>(roleCodeList).contains("S_ADMIN")) {
+            menuList = jdbcMenuDao.getAllMenuList();
+        }else{
+            List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
+            jdbcMenuDao.getListByGroupCodeList(group, menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode).collect(toList()));
+        }
         return groupMenus(menuList);
     }
 
@@ -52,9 +60,14 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<MenuGroup> getMenuGroupListByRoleList(List<String> roleCodeList){
         List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
-        List<String> groupCodeList = jdbcMenuDao.getListByCodeList(menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode)
-                .collect(toList())).stream().map(Menu::getMenuGroupCode).collect(toList());
-        return jdbcMenuGroupDao.getListByCodeList(groupCodeList);
+        List<String> groupCodeList = new LinkedList<>();
+        if(new HashSet<>(roleCodeList).contains("S_ADMIN")) {
+            return jdbcMenuGroupDao.getAll();
+        }else {
+            groupCodeList =jdbcMenuDao.getListByCodeList(menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode)
+                    .collect(toList())).stream().map(Menu::getMenuGroupCode).collect(toList());
+            return jdbcMenuGroupDao.getListByCodeList(groupCodeList);
+        }
     }
 
     @Override
@@ -115,7 +128,7 @@ public class MenuServiceImpl implements MenuService {
     }
 
     private void setChild(Menu root, List<Menu> menus){
-        List<Menu> childMenu = menus.stream().filter(menu -> menu.getParentCode().equals(root.getCode())).collect(toList());
+        List<Menu> childMenu = menus.stream().filter(menu -> root.getCode().equals(menu.getParentCode())).collect(toList());
         if(childMenu.size() <= 0){
             return;
         }

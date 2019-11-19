@@ -27,4 +27,11 @@ public class MenuGroupDao extends BaseMappingDao{
                 .build();
         return this.queryForAllBean(MenuGroup.class, sqlResult.sql, sqlResult.param);
     }
+
+    public List<MenuGroup> getAll(){
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
+                .selectFor("*")
+                .build();
+        return this.queryForAllBean(MenuGroup.class, sqlResult.sql, sqlResult.param);
+    }
 }
