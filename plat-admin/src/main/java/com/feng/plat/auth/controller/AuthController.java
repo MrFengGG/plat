@@ -1,6 +1,7 @@
 package com.feng.plat.auth.controller;
 
 import com.feng.home.common.common.StringUtil;
+import com.feng.home.common.resource.annotation.ResourceMeta;
 import com.feng.home.common.validate.AssertUtil;
 import com.feng.plat.auth.base.Token;
 import com.feng.plat.auth.base.TokenStore;
@@ -33,6 +34,7 @@ public class AuthController {
     }
 
     @RequestMapping(value = "/checkToken")
+    @ResourceMeta(code = "CURRENT_USER", resourceName = "当前用户信息", url = "/auth/checkToken", group = "plat", enableAuthCheck = false)
     public SysUser checkToken(HttpServletRequest request){
         String token = request.getHeader("token");
         return tokenStore.tokenToMessage(token).orElse(null);

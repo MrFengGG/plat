@@ -1,6 +1,7 @@
 package com.feng.plat.auth.base;
 
 
+import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.common.UIDUtils;
 import com.feng.home.plat.user.bean.SysUser;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,7 @@ public class MemoryUserTokenStore implements TokenStore<SysUser> {
 
     @Override
     public Optional<SysUser> tokenToMessage(String token) {
-        Optional<SysUser> userInfo = Optional.ofNullable(tokenStore.get(token));
+        Optional<SysUser> userInfo = Optional.ofNullable(StringUtil.isEmpty(token) ? null : tokenStore.get(token));
         if(userInfo.isPresent()){
             //刷新token失效时间
             tokenTimeMap.put(token, LocalTime.now());

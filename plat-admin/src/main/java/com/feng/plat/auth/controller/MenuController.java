@@ -1,6 +1,7 @@
 package com.feng.plat.auth.controller;
 
 import com.feng.home.common.jdbc.pagination.Page;
+import com.feng.home.common.resource.annotation.ResourceMeta;
 import com.feng.plat.auth.base.TokenStore;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.MenuGroup;
@@ -28,6 +29,7 @@ public class MenuController {
     private MenuService menuService;
 
     @RequestMapping(value = "/getAllMenu", method = RequestMethod.GET)
+    @ResourceMeta(code = "MENU_ALL", resourceName = "查询所有菜单", url = "/menu/getAllMenu", group = "plat")
     public List<Menu> getMenus(HttpServletRequest request){
         String token = request.getHeader("token");
         String group = request.getParameter("group");
@@ -36,6 +38,7 @@ public class MenuController {
     }
 
     @RequestMapping(value = "/getAllGroup", method = RequestMethod.GET)
+    @ResourceMeta(code = "MENU_GROUP_ALL", resourceName = "查询所有菜单组", url = "/menu/getAllGroup", group = "plat")
     public List<MenuGroup> getMenuGroups(HttpServletRequest request){
         String token = request.getHeader("token");
         Optional<SysUser> userOptional = tokenStore.tokenToMessage(token);
@@ -43,13 +46,15 @@ public class MenuController {
     }
 
     @RequestMapping(value = "/pageQueryMenu", method = RequestMethod.POST)
+    @ResourceMeta(code = "MENU_PAGINATION", resourceName = "分页查询菜单", url = "/menu/pageQueryMenu", group = "plat", enableAuthCheck = true)
     public Page<Menu> pageQuery(HttpServletRequest request){
         String token = request.getHeader("token");
         Optional<SysUser> userOptional = tokenStore.tokenToMessage(token);
         return userOptional.map(user -> menuService.pageQuery(new ArrayList<String>(user.getRoles()), null, null)).orElse(new Page<>());
     }
 
-    @RequestMapping(value = "save", method = RequestMethod.PUT)
+    @RequestMapping(value = "/save", method = RequestMethod.PUT)
+    @ResourceMeta(code = "MENU_SAVE", resourceName = "保存菜单", url = "/menu/save", group = "plat", enableAuthCheck = true)
     public void putMenu(Menu menu){
         menuService.save(menu);
     }
