@@ -33,6 +33,7 @@ public class MenuDao extends BaseMappingDao{
                 .selectFor("*")
                 .whereEqual("menu_group_code", group)
                 .whereIn("code", menuCodeList)
+                .orderBy("priority", SqlBuilder.OrderTypeEnum.DESC)
                 .build();
         return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
     }
@@ -65,6 +66,7 @@ public class MenuDao extends BaseMappingDao{
     public List<Menu> getAllMenuList(){
         SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
                 .selectFor("*")
+                .orderBy("priority", SqlBuilder.OrderTypeEnum.DESC)
                 .build();
         return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
     }

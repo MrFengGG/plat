@@ -28,25 +28,17 @@ public class Menu {
     @NotNull(message = "菜单名称不能为空!")
     private String menuName;
 
-    private String resourceCode;
-
     private String menuDesc;
 
     private String parentCode;
 
-    private Date createTime;
+    private Date createTime = new Date();
 
     private Date updateTime;
 
     private String menuPath;
 
-    @NotNull(message = "页面组件不能为空")
-    private String componentName;
-
-    private String componentParam;
-
-    @NoConvertField
-    private Resource resource;
+    private Integer priority;
 
     @NoConvertField
     private List<Role> needRoles;

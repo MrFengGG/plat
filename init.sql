@@ -47,21 +47,21 @@ create table if not exists home_plat.menu(
 	menu_group_code varchar(256) not null comment '项目组',
     icon varchar(256) comment '图标',
     menu_name varchar(30) not null comment '菜单名称',
-    resource_code varchar(256) comment '资源code',
     menu_desc varchar(256) comment '菜单描述',
     parent_code varchar(256) comment '父级菜单',
     create_time DATETIME comment '创建时间',
     update_time DATETIME comment '修改时间',
     menu_path varchar(256) comment'菜单路径',
-    component_name varchar(256) comment '组件名称',
-    component_param varchar(256) comment '组件参数'
+    priority int comment '显示优先级'
 );
 
 create table if not exists home_plat.menu_group(
 	id int not null primary key auto_increment comment 'id',
 	group_name varchar(256) not null comment '菜单组名称',
 	code varchar(30) not null comment '菜单组代码',
-	group_desc varchar(256) comment '菜单组描述'
+	group_desc varchar(256) comment '菜单组描述',
+	index_path varchar(256) comment '首页路径',
+	priority int comment '显示优先级'
 );
 
 create table if not exists home_plat.resource_role(
@@ -92,12 +92,10 @@ insert into home_plat.role(code,role_name,role_desc, create_time) values('S_ADMI
 
 insert into home_plat.user_role(role_code, user_id, create_time) values('S_ADMIN','1', now());
 
-insert into home_plat.menu_group(group_name, code, group_desc) values('管理平台','plat', '管理平台');
+insert into home_plat.menu_group(group_name, code, index_path, group_desc, priority) values('管理平台','plat', '/plat/index', '管理平台', 1);
 
-insert into home_plat.menu(code, menu_type, menu_group_code, icon, menu_name, menu_desc, create_time)
-values('menu', 1, 'plat', 'fa fa-cog', '菜单管理', '菜单管理父级菜单', now())
+insert into home_plat.menu(code, menu_type, menu_group_code, icon, menu_name, menu_desc, create_time, priority)
+values('menu', 1, 'plat', 'fa fa-cog', '菜单管理', '菜单管理父级菜单', now(), 2)
 
-insert into home_plat.menu(code, menu_type, menu_group_code, icon, menu_name, menu_desc, parent_code, create_time, menu_path, component_name, component_param)
-values('menu_edit', 0, 'plat', 'fa fa-pencil-square-o','菜单编辑器','用于编辑新的菜单', 'menu', now(), '/menu/edit', 'MenuEditPage','{}')
-
-insert into home_plat.
+insert into home_plat.menu(code, menu_type, menu_group_code, icon, menu_name, menu_desc, parent_code, create_time, menu_path, priority)
+values('menu_edit', 0, 'plat', 'fa fa-pencil-square-o','菜单编辑器','用于编辑新的菜单', 'menu', now(), '/menu/edit', 2)

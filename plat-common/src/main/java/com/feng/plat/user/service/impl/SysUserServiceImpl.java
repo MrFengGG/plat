@@ -1,6 +1,7 @@
 package com.feng.plat.user.service.impl;
 
 import com.feng.home.common.common.PasswordUtil;
+import com.feng.home.common.exception.SampleBusinessException;
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.plat.user.enums.UserStatusEnum;
 import com.feng.plat.auth.service.RoleService;
@@ -47,7 +48,7 @@ public class SysUserServiceImpl implements SysUserService {
     public SysUser login(String username, String password) {
         Optional<SysUser> sysUser = findByUsername(username);
         if(!sysUser.isPresent() || !PasswordUtil.match(password, sysUser.get().getPassword())){
-            throw new UnsupportedOperationException("账户不存在或密码错误");
+            throw new SampleBusinessException("账户不存在或密码错误");
         }
         return sysUser.map(user -> {
             user.setPassword("*");

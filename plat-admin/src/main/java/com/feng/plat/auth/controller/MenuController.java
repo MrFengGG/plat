@@ -2,11 +2,13 @@ package com.feng.plat.auth.controller;
 
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.resource.annotation.ResourceMeta;
+import com.feng.home.common.validate.ValidationUtil;
 import com.feng.plat.auth.base.TokenStore;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.MenuGroup;
 import com.feng.plat.auth.service.MenuService;
 import com.feng.home.plat.user.bean.SysUser;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,16 +48,17 @@ public class MenuController {
     }
 
     @RequestMapping(value = "/pageQueryMenu", method = RequestMethod.POST)
-    @ResourceMeta(code = "MENU_PAGINATION", resourceName = "分页查询菜单", url = "/menu/pageQueryMenu", group = "plat", enableAuthCheck = true)
+    @ResourceMeta(code = "MENU_PAGINATION", resourceName = "分页查询菜单", url = "/menu/pageQueryMenu", group = "plat")
     public Page<Menu> pageQuery(HttpServletRequest request){
         String token = request.getHeader("token");
         Optional<SysUser> userOptional = tokenStore.tokenToMessage(token);
         return userOptional.map(user -> menuService.pageQuery(new ArrayList<String>(user.getRoles()), null, null)).orElse(new Page<>());
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.PUT)
-    @ResourceMeta(code = "MENU_SAVE", resourceName = "保存菜单", url = "/menu/save", group = "plat", enableAuthCheck = true)
-    public void putMenu(Menu menu){
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ResourceMeta(code = "MENU_SAVE", resourceName = "保存菜单", url = "/menu/save", group = "plat")
+    public void putMenu(@RequestBody Menu menu){
+        ValidationUtil.validate(menu);
         menuService.save(menu);
     }
 

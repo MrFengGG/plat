@@ -17,4 +17,8 @@ public class MenuGroup {
     private String code;
 
     private String groupDesc;
+
+    private String indexPath;
+
+    private Integer priority;
 }
