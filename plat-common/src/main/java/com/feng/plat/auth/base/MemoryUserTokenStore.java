@@ -15,6 +15,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 简单token仓库
+ */
 @Component
 public class MemoryUserTokenStore implements TokenStore<SysUser> {
     private Map<String, SysUser> tokenStore = new ConcurrentHashMap<>();

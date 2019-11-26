@@ -6,6 +6,7 @@ import com.feng.home.common.validate.ValidationUtil;
 import com.feng.home.plat.user.bean.SysUser;
 import com.feng.home.plat.user.bean.condition.UserQueryCondition;
 import com.feng.plat.user.service.SysUserService;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,7 +22,7 @@ public class UserController {
     private SysUserService sysUserService;
 
     @ResourceMeta(code = "USER_PAGE_QUERY", resourceName = "分页查询用户", url = "/user/query", group = "plat", enableAuthCheck = true)
-    @RequestMapping(value = "/query")
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
     public Page<SysUser> query(UserQueryCondition userQueryCondition, @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize, String orderBy) throws SQLException {
         Page<SysUser> page = new Page<>();
         page.setPageNo(pageNo);
@@ -31,7 +32,7 @@ public class UserController {
     }
 
     @ResourceMeta(code = "USER_ADD", resourceName = "新增用户", url = "/user/add", group = "plat")
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public void add(SysUser sysUser) throws SQLException {
         ValidationUtil.validate(sysUser);
         sysUserService.save(sysUser);

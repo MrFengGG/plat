@@ -59,11 +59,11 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuGroup> getMenuGroupListByRoleList(List<String> roleCodeList){
-        List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
         List<String> groupCodeList = new LinkedList<>();
         if(new HashSet<>(roleCodeList).contains("S_ADMIN")) {
             return jdbcMenuGroupDao.getAll();
         }else {
+            List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
             groupCodeList =jdbcMenuDao.getListByCodeList(menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode)
                     .collect(toList())).stream().map(Menu::getMenuGroupCode).collect(toList());
             return jdbcMenuGroupDao.getListByCodeList(groupCodeList);

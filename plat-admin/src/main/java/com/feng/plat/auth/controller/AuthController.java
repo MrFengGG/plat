@@ -27,11 +27,10 @@ public class AuthController {
     public Token accessToken(String username, String password){
         AssertUtil.assertTrue(StringUtil.isNotEmpty(username) && StringUtil.isNotEmpty(password), "用户名和密码不能为空");
         SysUser sysUser = sysUserService.login(username, password);
-        Token token = tokenStore.messageToToken(sysUser);
-        return token;
+        return tokenStore.messageToToken(sysUser);
     }
 
-    @RequestMapping(value = "/checkToken")
+    @RequestMapping(value = "/checkToken", method = RequestMethod.GET)
     @ResourceMeta(code = "CURRENT_USER", resourceName = "当前用户信息", url = "/auth/checkToken", group = "plat", enableAuthCheck = false)
     public SysUser checkToken(HttpServletRequest request){
         String token = request.getHeader("token");
