@@ -1,8 +1,9 @@
 package com.feng.plat.auth.dao;
 
+import com.feng.home.common.collection.CollectionUtils;
+import com.feng.home.common.enums.Binary;
 import com.feng.home.common.jdbc.base.BaseMappingDao;
 import com.feng.home.common.jdbc.base.DaoMapping;
-import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.sql.SqlBuilder;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.condition.MenuQueryCondition;
@@ -10,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,14 +31,12 @@ public class MenuDao extends BaseMappingDao{
      * @param menuCodeList
      * @return
      */
-    public List<Menu> getListByGroupCodeList(String group, List<String> menuCodeList){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .whereEqual("menu_group_code", group)
-                .whereIn("code", menuCodeList)
-                .orderBy("priority", SqlBuilder.OrderTypeEnum.DESC)
+    public List<Menu> getEnableListByGroupCodeList(String group, List<String> menuCodeList){
+        MenuQueryCondition condition = MenuQueryCondition.builder().menuCodeList(menuCodeList)
+                .menuGroupCode(group)
+                .enable(Binary.YES.getValue())
                 .build();
-        return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
+        return query(condition);
     }
 
     /**
@@ -43,34 +44,25 @@ public class MenuDao extends BaseMappingDao{
      * @param menuCodeList
      * @return
      */
-    public List<Menu> getListByCodeList(List<String> menuCodeList){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .whereIn("code", menuCodeList)
+    public List<Menu> getEnableListByCodeList(List<String> menuCodeList){
+        MenuQueryCondition condition = MenuQueryCondition.builder().menuCodeList(menuCodeList)
+                .enable(Binary.YES.getValue())
                 .build();
-        return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
+        return this.query(condition);
     }
-
-    public Page<Menu> pageQuery(MenuQueryCondition menuQueryCondition, Page<Menu> page){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .build();
-        return this.queryForPaginationBean(page, Menu.class, sqlResult.sql, sqlResult.param);
-    }
-
 
     /**
      * 获取所有菜单
      * @return
      */
-    public List<Menu> getAllMenuList(){
+    public List<Menu> getEnableList(){
         SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
                 .selectFor("*")
+                .whereNotLess("enable", 1)
                 .orderBy("priority", SqlBuilder.OrderTypeEnum.DESC)
                 .build();
         return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
     }
-
     /**
      * 根据菜单代码查询菜单
      * @param code
@@ -86,12 +78,27 @@ public class MenuDao extends BaseMappingDao{
 
     /**
      * 根据菜单代码删除菜单
-     * @param code
+     * @param codeList
      */
-    public void removeByCode(String code){
+    public void removeByCode(Collection<String> codeList){
         SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.REMOVE, this.getTable())
-                .whereEqual("code", code)
+                .whereIn("code", codeList)
                 .build();
         this.jdbcTemplate.update(sqlResult.sql, sqlResult.param);
+    }
+
+    public List<Menu> query(MenuQueryCondition condition){
+        Date[] timeTuple = condition.getCreateTimeTuple();
+        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
+                .selectFor("*")
+                .whereLikeAround("menu_name", condition.getMenuName())
+                .whereLikeAround("menu_path", condition.getMenuPath())
+                .whereNotLess("create_time", CollectionUtils.saveGet(timeTuple,0))
+                .whereNotGrater("create_time", CollectionUtils.saveGet(timeTuple,1))
+                .whereEqual("enable", condition.getEnable())
+                .whereEqual("menu_group_code", condition.getMenuGroupCode())
+                .orderBy("priority", SqlBuilder.OrderTypeEnum.DESC)
+                .build();
+        return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
     }
 }

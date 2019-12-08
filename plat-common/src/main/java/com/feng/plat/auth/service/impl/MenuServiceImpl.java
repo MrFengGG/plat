@@ -1,7 +1,7 @@
 package com.feng.plat.auth.service.impl;
 
+import com.feng.home.common.auth.AuthContext;
 import com.feng.home.common.common.StringUtil;
-import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.MenuGroup;
@@ -15,13 +15,9 @@ import com.feng.plat.auth.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -43,11 +39,11 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<Menu> getListByRoleList(String group, List<String> roleCodeList){
         List<Menu> menuList = new LinkedList<>();
-        if(new HashSet<>(roleCodeList).contains("S_ADMIN")) {
-            menuList = jdbcMenuDao.getAllMenuList();
+        if(AuthContext.currentUserInWhiteList()) {
+            menuList = jdbcMenuDao.getEnableList();
         }else{
             List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
-            jdbcMenuDao.getListByGroupCodeList(group, menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode).collect(toList()));
+            jdbcMenuDao.getEnableListByGroupCodeList(group, menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode).collect(toList()));
         }
         return groupMenus(menuList);
     }
@@ -59,33 +55,20 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuGroup> getMenuGroupListByRoleList(List<String> roleCodeList){
-        List<String> groupCodeList = new LinkedList<>();
-        if(new HashSet<>(roleCodeList).contains("S_ADMIN")) {
+        List<String> groupCodeList;
+        if(AuthContext.currentUserInWhiteList()) {
             return jdbcMenuGroupDao.getAll();
         }else {
             List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
-            groupCodeList =jdbcMenuDao.getListByCodeList(menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode)
+            groupCodeList =jdbcMenuDao.getEnableListByCodeList(menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode)
                     .collect(toList())).stream().map(Menu::getMenuGroupCode).collect(toList());
             return jdbcMenuGroupDao.getListByCodeList(groupCodeList);
         }
     }
 
     @Override
-    public Page<Menu> pageQuery(List<String> roleCodeList, MenuQueryCondition condition, Page<Menu> page){
-        List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
-        List<String> menuCodeList = menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode).collect(toList());
-        condition.setMenuCodeList(menuCodeList);
-        return jdbcMenuDao.pageQuery(condition, page);
-    }
-
-    /**
-     * 获取所有菜单
-     * @return
-     */
-    @Override
-    public List<Menu> getAll(){
-        List<Menu> menuList = jdbcMenuDao.getAllMenuList();
-        return groupMenus(menuList);
+    public List<Menu> query(MenuQueryCondition condition) {
+        return groupMenus(jdbcMenuDao.query(condition));
     }
 
     /**
@@ -110,13 +93,14 @@ public class MenuServiceImpl implements MenuService {
         MenuRoleMappingDao.saveBean(MenuRoleMapping.builder().menuCode(menuCode).roleCode(roleCode));
     }
 
-    /**
-     * 删除菜单
-     * @param menuCode
-     */
     @Override
-    public void remove(String menuCode){
+    public void remove(Collection<String> menuCode){
         jdbcMenuDao.removeByCode(menuCode);
+    }
+
+    @Override
+    public Optional<Menu> findById(Integer id) {
+        return jdbcMenuDao.findById(id, Menu.class);
     }
 
     private List<Menu> groupMenus(List<Menu> menus){

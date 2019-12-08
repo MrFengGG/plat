@@ -8,4 +8,6 @@ public interface TokenStore<T> {
     public Optional<T> tokenToMessage(String token);
 
     public Token refreshToken(String token);
+
+    public void removeToken(String token);
 }

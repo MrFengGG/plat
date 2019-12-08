@@ -21,9 +21,9 @@ public class UserController {
     @Resource
     private SysUserService sysUserService;
 
-    @ResourceMeta(code = "USER_PAGE_QUERY", resourceName = "分页查询用户", url = "/user/query", group = "plat", enableAuthCheck = true)
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
-    public Page<SysUser> query(UserQueryCondition userQueryCondition, @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize, String orderBy) throws SQLException {
+    @ResourceMeta(code = "USER-PAGINATION_QUERY", resourceName = "分页查询用户", url = "/user/pagination_query", group = "plat")
+    @RequestMapping(value = "/pagination_query", method = RequestMethod.GET)
+    public Page<SysUser> paginationQuery(UserQueryCondition userQueryCondition, @RequestParam(defaultValue = "1") int pageNo, @RequestParam(defaultValue = "10") int pageSize, String orderBy) throws SQLException {
         Page<SysUser> page = new Page<>();
         page.setPageNo(pageNo);
         page.setPageSize(pageSize);
@@ -31,9 +31,9 @@ public class UserController {
         return sysUserService.pageQuery(userQueryCondition, page);
     }
 
-    @ResourceMeta(code = "USER_ADD", resourceName = "新增用户", url = "/user/add", group = "plat")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public void add(SysUser sysUser) throws SQLException {
+    @ResourceMeta(code = "USER-ADD", resourceName = "新增用户", url = "/user/save", group = "plat")
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public void save(SysUser sysUser){
         ValidationUtil.validate(sysUser);
         sysUserService.save(sysUser);
     }

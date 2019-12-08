@@ -34,13 +34,13 @@ public class SysUserDao extends BaseMappingDao {
     public Page<SysUser> pageQuery(UserQueryCondition userQueryCondition, Page<SysUser> page) throws SQLException {
         SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "sys_user")
                 .selectFor("*")
-                .whereEqualIfNotEmpty("email", userQueryCondition.getEmail())
-                .whereEqualIfNotEmpty("mobile", userQueryCondition.getMobile())
+                .whereEqual("email", userQueryCondition.getEmail())
+                .whereEqual("mobile", userQueryCondition.getMobile())
                 .whereLike("real_name", userQueryCondition.getRealName())
                 .whereLike("username", userQueryCondition.getUsername())
                 .whereIn("status", userQueryCondition.getStatusList())
-                .whereGraterIfNotEmpty("create_time", userQueryCondition.getRegisterStartTime())
-                .whereLessIfNotEmpty("create_time", userQueryCondition.getRegisterEndTime())
+                .whereNotLess("create_time", userQueryCondition.getRegisterStartTime())
+                .whereNotGrater("create_time", userQueryCondition.getRegisterEndTime())
                 .build();
         return this.queryForPaginationBean(page, SysUser.class, sqlResult.sql, sqlResult.param);
     }

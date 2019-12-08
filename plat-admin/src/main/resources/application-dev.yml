@@ -18,7 +18,10 @@ eureka:
 server:
   port: 9000
 resource:
-  check-token-url: http://127.0.0.1:9000/auth/checkToken
+  check-token-url: http://127.0.0.1:9000/auth/check_token
   login-url: http://www.baidu.com
   white-list-role:
     - S_ADMIN
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss

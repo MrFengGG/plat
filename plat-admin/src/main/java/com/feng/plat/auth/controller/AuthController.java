@@ -23,17 +23,24 @@ public class AuthController {
     @Resource
     private SysUserService sysUserService;
 
-    @RequestMapping(value = "/accessToken", method = RequestMethod.GET)
+    @RequestMapping(value = "/access_token", method = RequestMethod.GET)
     public Token accessToken(String username, String password){
         AssertUtil.assertTrue(StringUtil.isNotEmpty(username) && StringUtil.isNotEmpty(password), "用户名和密码不能为空");
         SysUser sysUser = sysUserService.login(username, password);
         return tokenStore.messageToToken(sysUser);
     }
 
-    @RequestMapping(value = "/checkToken", method = RequestMethod.GET)
-    @ResourceMeta(code = "CURRENT_USER", resourceName = "当前用户信息", url = "/auth/checkToken", group = "plat", enableAuthCheck = false)
+    @RequestMapping(value = "/check_token", method = RequestMethod.GET)
+    @ResourceMeta(code = "AUTH-CHECK_TOKEN", resourceName = "当前用户信息", url = "/auth/checkToken", group = "plat", enableAuthCheck = false)
     public SysUser checkToken(HttpServletRequest request){
         String token = request.getHeader("token");
         return tokenStore.tokenToMessage(token).orElse(null);
+    }
+
+    @RequestMapping(value = "/clear_token", method = RequestMethod.GET)
+    @ResourceMeta(code = "AUTH-CLEAR_TOKEN", resourceName = "取消登录", url = "/auth/clear_token", group = "plat", enableAuthCheck = false)
+    public void clearToken(HttpServletRequest request){
+        String token = request.getHeader("token");
+        tokenStore.removeToken(token);
     }
 }

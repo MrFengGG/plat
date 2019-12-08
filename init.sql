@@ -52,7 +52,8 @@ create table if not exists home_plat.menu(
     create_time DATETIME comment '创建时间',
     update_time DATETIME comment '修改时间',
     menu_path varchar(256) comment'菜单路径',
-    priority int comment '显示优先级'
+    priority int comment '显示优先级',
+    enable tinyint not null default 1 comment '是否显示1:是,2否'
 );
 
 create table if not exists home_plat.menu_group(

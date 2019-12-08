@@ -45,10 +45,10 @@ public class RoleDao extends BaseMappingDao{
                 .selectFor("*")
                 .whereLike("role_name", roleQueryCondition.getRoleName())
                 .whereLike("role_desc", roleQueryCondition.getRoleDesc())
-                .whereGraterIfNotEmpty("create_time", roleQueryCondition.getCreateStartTime())
-                .whereLessIfNotEmpty("create_time", roleQueryCondition.getCreateEndTime())
-                .whereGraterIfNotEmpty("update_time", roleQueryCondition.getUpdateStartTime())
-                .whereLessIfNotEmpty("update_time", roleQueryCondition.getUpdateEndTime())
+                .whereNotLess("create_time", roleQueryCondition.getCreateStartTime())
+                .whereNotGrater("create_time", roleQueryCondition.getCreateEndTime())
+                .whereNotLess("update_time", roleQueryCondition.getUpdateStartTime())
+                .whereNotGrater("update_time", roleQueryCondition.getUpdateEndTime())
                 .build();
         return this.pageQuery(roleQueryCondition, page);
     }

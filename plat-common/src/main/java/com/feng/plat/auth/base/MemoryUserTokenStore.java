@@ -59,6 +59,11 @@ public class MemoryUserTokenStore implements TokenStore<SysUser> {
         return genToken(token);
     }
 
+    @Override
+    public void removeToken(String token) {
+        tokenStore.remove(token);
+    }
+
     private Token genToken(String token){
         return Token.builder().expireTime(LocalTime.now().atOffset(ZoneOffset.ofHoursMinutes(0, 30))
                 .toLocalTime()).token(token).build();
