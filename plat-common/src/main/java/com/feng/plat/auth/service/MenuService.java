@@ -22,4 +22,6 @@ public interface MenuService {
     public void remove(Collection<String> code);
 
     public Optional<Menu> findById(Integer id);
+
+    public boolean updateMenu(Menu menu);
 }

@@ -103,6 +103,11 @@ public class MenuServiceImpl implements MenuService {
         return jdbcMenuDao.findById(id, Menu.class);
     }
 
+    @Override
+    public boolean updateMenu(Menu menu) {
+        return jdbcMenuDao.updateById(menu) > 0;
+    }
+
     private List<Menu> groupMenus(List<Menu> menus){
         List<Menu> rootMenus = menus.stream().filter(menu -> StringUtil.isEmpty(menu.getParentCode())).collect(toList());
         return rootMenus.stream().map(rootMenu -> {

@@ -2,6 +2,7 @@ package com.feng.plat.auth.controller;
 
 import com.feng.home.common.auth.AuthContext;
 import com.feng.home.common.auth.bean.ContextUser;
+import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.resource.annotation.ResourceMeta;
 import com.feng.home.common.utils.RequestUtils;
@@ -55,11 +56,15 @@ public class MenuController {
         return menuService.getMenuGroupListByRoleList(new ArrayList<>(contextUser.getRoleList()));
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    @ResourceMeta(code = "MENU-SAVE", resourceName = "保存菜单", url = "/menu/save", group = "plat")
+    @RequestMapping(value = "/save_or_update", method = RequestMethod.POST)
+    @ResourceMeta(code = "MENU-SAVE_OR_UPDATE", resourceName = "保存或修改菜单", url = "/menu/save_or_update", group = "plat")
     public void save(@RequestBody Menu menu){
         ValidationUtil.validate(menu);
-        menuService.save(menu);
+        if(StringUtil.isEmpty(menu.getId())) {
+            menuService.save(menu);
+        }else {
+            menuService.updateMenu(menu);
+        }
     }
 
 }
