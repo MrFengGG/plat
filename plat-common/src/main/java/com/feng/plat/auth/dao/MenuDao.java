@@ -26,11 +26,6 @@ public class MenuDao extends BaseMappingDao{
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    /**
-     * 根据菜单代码列表查询菜单
-     * @param menuCodeList
-     * @return
-     */
     public List<Menu> getEnableListByGroupCodeList(String group, List<String> menuCodeList){
         MenuQueryCondition condition = MenuQueryCondition.builder().menuCodeList(menuCodeList)
                 .menuGroupCode(group)
@@ -39,11 +34,6 @@ public class MenuDao extends BaseMappingDao{
         return query(condition);
     }
 
-    /**
-     * 根据菜单代码列表查询菜单
-     * @param menuCodeList
-     * @return
-     */
     public List<Menu> getEnableListByCodeList(List<String> menuCodeList){
         MenuQueryCondition condition = MenuQueryCondition.builder().menuCodeList(menuCodeList)
                 .enable(Binary.YES.getValue())
@@ -51,54 +41,37 @@ public class MenuDao extends BaseMappingDao{
         return this.query(condition);
     }
 
-    /**
-     * 获取所有菜单
-     * @return
-     */
-    public List<Menu> getEnableList(){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .whereNotLess("enable", 1)
-                .orderBy("priority", SqlBuilder.OrderTypeEnum.DESC)
+    public List<Menu> getListByCodeList(List<String> menuCodeList){
+        MenuQueryCondition condition = MenuQueryCondition.builder().menuCodeList(menuCodeList)
                 .build();
-        return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
-    }
-    /**
-     * 根据菜单代码查询菜单
-     * @param code
-     * @return
-     */
-    public Optional<Menu> findByCode(String code){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .whereEqual("code", code)
-                .build();
-        return this.findFirstBean(Menu.class, sqlResult.sql, sqlResult.param);
+        return this.query(condition);
     }
 
-    /**
-     * 根据菜单代码删除菜单
-     * @param codeList
-     */
-    public void removeByCode(Collection<String> codeList){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.REMOVE, this.getTable())
-                .whereIn("code", codeList)
-                .build();
-        this.jdbcTemplate.update(sqlResult.sql, sqlResult.param);
+    public List<Menu> getEnableList(){
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable())
+                .joinDirect("where enable=?", 1)
+                .joinDirect("order by priority desc");
+        return this.queryForAllBean(Menu.class, sqlBuilder);
+    }
+
+    public Optional<Menu> findByCode(String code){
+        return this.findBy("code", Menu.class, this.getTable(), code);
+    }
+
+    public int removeByCode(Collection<String> codeList){
+        return this.remove("code", codeList.toArray(), this.getTable());
     }
 
     public List<Menu> query(MenuQueryCondition condition){
         Date[] timeTuple = condition.getCreateTimeTuple();
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .whereLikeAround("menu_name", condition.getMenuName())
-                .whereLikeAround("menu_path", condition.getMenuPath())
-                .whereNotLess("create_time", CollectionUtils.saveGet(timeTuple,0))
-                .whereNotGrater("create_time", CollectionUtils.saveGet(timeTuple,1))
-                .whereEqual("enable", condition.getEnable())
-                .whereEqual("menu_group_code", condition.getMenuGroupCode())
-                .orderBy("priority", SqlBuilder.OrderTypeEnum.DESC)
-                .build();
-        return this.queryForAllBean(Menu.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable())
+                .joinDirect("where 1=1").joinLikeAround("and menu_name", condition.getMenuName())
+                .joinLikeAround("and menu_path", condition.getMenuPath())
+                .join("and create_time >= ", CollectionUtils.safeGet(timeTuple,0))
+                .join("and create_time <= ", CollectionUtils.safeGet(timeTuple,1))
+                .join("and enable =?", condition.getEnable())
+                .join("and menu_group_code =?", condition.getMenuGroupCode())
+                .join("and parent_code =?", condition.getParentCode()).joinDirect("order by priority desc");
+        return this.queryForAllBean(Menu.class, sqlBuilder);
     }
 }

@@ -2,6 +2,7 @@ package com.feng.plat.auth.controller;
 
 import com.feng.home.common.auth.AuthContext;
 import com.feng.home.common.auth.bean.ContextUser;
+import com.feng.home.common.collection.Dict;
 import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.resource.annotation.ResourceMeta;
@@ -67,4 +68,11 @@ public class MenuController {
         }
     }
 
+    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    @ResourceMeta(code = "MENU-REMOVE", resourceName = "保存或修改菜单", url = "/menu/remove", group = "plat")
+    public void remove(@RequestBody Dict dict){
+        String menuCode = dict.getStr("menuCode");
+        Boolean recursion = dict.getBoolean("recursion");
+        menuService.remove(menuCode, recursion);
+    }
 }

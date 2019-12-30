@@ -2,6 +2,7 @@ package com.feng.plat.auth.service.impl;
 
 import com.feng.home.common.auth.AuthContext;
 import com.feng.home.common.common.StringUtil;
+import com.feng.home.common.exception.SampleBusinessException;
 import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.MenuGroup;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -30,12 +32,6 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private MenuGroupDao jdbcMenuGroupDao;
 
-    /**
-     * 根据角色获取菜单
-     * @param roleCodeList
-     * @param group
-     * @return
-     */
     @Override
     public List<Menu> getListByRoleList(String group, List<String> roleCodeList){
         List<Menu> menuList = new LinkedList<>();
@@ -43,16 +39,11 @@ public class MenuServiceImpl implements MenuService {
             menuList = jdbcMenuDao.getEnableList();
         }else{
             List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByRoleCodeList(roleCodeList);
-            jdbcMenuDao.getEnableListByGroupCodeList(group, menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode).collect(toList()));
+            menuList = jdbcMenuDao.getEnableListByGroupCodeList(group, menuRoleMappingList.stream().map(MenuRoleMapping::getMenuCode).collect(toList()));
         }
         return groupMenus(menuList);
     }
 
-    /**
-     * 根据角色获取菜单组
-     * @param roleCodeList
-     * @return
-     */
     @Override
     public List<MenuGroup> getMenuGroupListByRoleList(List<String> roleCodeList){
         List<String> groupCodeList;
@@ -71,20 +62,11 @@ public class MenuServiceImpl implements MenuService {
         return groupMenus(jdbcMenuDao.query(condition));
     }
 
-    /**
-     * 保存菜单
-     * @param menu
-     */
     @Override
     public void save(Menu menu){
         jdbcMenuDao.saveBean(menu);
     }
 
-    /**
-     * 给菜单授权
-     * @param menuCode
-     * @param roleCode
-     */
     @Override
     public void giveMenuRole(String menuCode, String roleCode){
         AssertUtil.assertTrue(jdbcMenuDao.findByCode(menuCode).isPresent(), "菜单不存在");
@@ -94,8 +76,18 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public void remove(Collection<String> menuCode){
-        jdbcMenuDao.removeByCode(menuCode);
+    public void remove(String menuCode, Boolean recursion){
+        if(StringUtil.isEmpty(menuCode)){
+            throw new SampleBusinessException("菜单代码不能为空");
+        }
+        MenuQueryCondition menuQueryCondition = MenuQueryCondition.builder().parentCode(menuCode).build();
+        List<Menu> childrenMenuList = jdbcMenuDao.query(menuQueryCondition);
+        if(childrenMenuList.size() > 0 && !recursion){
+            throw new SampleBusinessException("该菜单包含子节点!");
+        }
+        List<String> deleteMenuCode = Stream.of(menuCode).collect(toList());
+        deleteMenuCode.addAll(childrenMenuList.stream().map(Menu::getCode).collect(toList()));
+        this.jdbcMenuDao.removeByCode(deleteMenuCode);
     }
 
     @Override
@@ -105,6 +97,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public boolean updateMenu(Menu menu) {
+        menu.setUpdateTime(new Date());
         return jdbcMenuDao.updateById(menu) > 0;
     }
 

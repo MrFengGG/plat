@@ -22,4 +22,5 @@ public class MenuQueryCondition {
     private Integer enable;
     private String groupCode;
     private String orderBy = "priority";
+    private String parentCode;
 }
