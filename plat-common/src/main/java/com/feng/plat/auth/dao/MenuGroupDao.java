@@ -20,17 +20,12 @@ public class MenuGroupDao extends BaseMappingDao{
     }
 
     public List<MenuGroup> getListByCodeList(List<String> codeList){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .whereIn("code", codeList)
-                .build();
-        return this.queryForAllBean(MenuGroup.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinIn("where code", codeList);
+        return this.queryForAllBean(MenuGroup.class, sqlBuilder);
     }
 
     public List<MenuGroup> getAll(){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .build();
-        return this.queryForAllBean(MenuGroup.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable());
+        return this.queryForAllBean(MenuGroup.class, sqlBuilder);
     }
 }

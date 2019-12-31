@@ -22,19 +22,13 @@ public class MenuRoleMappingDao extends BaseMappingDao{
     }
 
     public List<MenuRoleMapping> getListByRoleCodeList(List<String> roleList){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .whereIn("role_code", roleList)
-                .build();
-        return this.queryForAllBean(MenuRoleMapping.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinIn("where role_code", roleList);
+        return this.queryForAllBean(MenuRoleMapping.class, sqlBuilder);
     }
 
     public Optional<MenuRoleMapping> findFirst(String roleCode, String menuCode){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, this.getTable())
-                .selectFor("*")
-                .whereEqual("role_code", roleCode)
-                .whereEqual("menu_code", menuCode)
-                .build();
-        return this.findFirstBean(MenuRoleMapping.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinDirect("where role_code=?", roleCode)
+                .joinDirect("where menu_code=?", menuCode);
+        return this.findFirstBean(MenuRoleMapping.class, sqlBuilder);
     }
 }

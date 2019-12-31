@@ -24,25 +24,19 @@ public class SysUserDao extends BaseMappingDao {
     }
 
     public Optional<SysUser> findUserByUsername(String username){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "sys_user")
-                .selectFor("*")
-                .whereEqual("username", username)
-                .build();
-        return this.findFirstBean(SysUser.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from ").joinDirect(this.getTable()).joinDirect("where username=?", username);
+        return this.findFirstBean(SysUser.class, sqlBuilder);
     }
 
     public Page<SysUser> pageQuery(UserQueryCondition userQueryCondition, Page<SysUser> page) throws SQLException {
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "sys_user")
-                .selectFor("*")
-                .whereEqual("email", userQueryCondition.getEmail())
-                .whereEqual("mobile", userQueryCondition.getMobile())
-                .whereLike("real_name", userQueryCondition.getRealName())
-                .whereLike("username", userQueryCondition.getUsername())
-                .whereIn("status", userQueryCondition.getStatusList())
-                .whereNotLess("create_time", userQueryCondition.getRegisterStartTime())
-                .whereNotGrater("create_time", userQueryCondition.getRegisterEndTime())
-                .build();
-        return this.queryForPaginationBean(page, SysUser.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from ").joinDirect(this.getTable()).joinDirect("where 1=1")
+                .joinLikeAround("and email", userQueryCondition.getEmail())
+                .joinLikeAround("and mobile", userQueryCondition.getMobile())
+                .joinLikeAround("and username", userQueryCondition.getUsername())
+                .joinIn("and status", userQueryCondition.getStatusList())
+                .join("and create_time>=?", userQueryCondition.getRegisterStartTime())
+                .join("and create_time<=?", userQueryCondition.getRegisterEndTime());
+        return this.queryForPaginationBean(page, SysUser.class, sqlBuilder);
     }
 
 }

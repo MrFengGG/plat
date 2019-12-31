@@ -16,28 +16,13 @@ import java.util.Optional;
 public class UserRoleMappingDao extends BaseMappingDao {
 
     public List<UserRoleMapping> getUserRoleMappingListByUserId(int user_id) {
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "user_role")
-                .selectFor("*")
-                .whereEqual("user_id", user_id)
-                .build();
-        return this.queryForAllBean(UserRoleMapping.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinDirect("where user_id=?", user_id);
+        return this.queryForAllBean(UserRoleMapping.class, sqlBuilder);
     }
 
     public List<UserRoleMapping> getUserRoleMappingListByUserIdList(List<Integer> idList){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "user_role")
-                .selectFor("*")
-                .whereIn("user_id", idList)
-                .build();
-        return this.queryForAllBean(UserRoleMapping.class, sqlResult.sql, sqlResult.param);
-    }
-
-    public Optional<UserRoleMapping> findUniqueUserRoleMapping(int userId, String roleCode){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "user_role")
-                .selectFor("*")
-                .whereEqual("user_id", userId)
-                .whereEqual("role_code", roleCode)
-                .build();
-        return this.findFirstBean(UserRoleMapping.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinIn("where user_id", idList);
+        return this.queryForAllBean(UserRoleMapping.class, sqlBuilder);
     }
 
     @Resource

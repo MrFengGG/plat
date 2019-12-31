@@ -25,31 +25,24 @@ public class RoleDao extends BaseMappingDao{
     }
 
     public Optional<Role> findByCode(String roleCode) {
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "role")
-                .selectFor("*")
-                .whereEqual("code", roleCode)
-                .build();
-        return this.findFirstBean(Role.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinDirect("where code=?", roleCode);
+        return this.findFirstBean(Role.class, sqlBuilder);
     }
 
     public List<Role> getListByCodeList(Collection<String> roleCodeList) {
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "role")
-                .selectFor("*")
-                .whereIn("code", roleCodeList)
-                .build();
-        return this.queryForAllBean(Role.class, sqlResult.sql, sqlResult.param);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinIn("where code=", roleCodeList);
+        return this.queryForAllBean(Role.class, sqlBuilder);
     }
 
     public Page<Role> pageQuery(RoleQueryCondition roleQueryCondition, Page<Role> page){
-        SqlBuilder.SqlResult sqlResult = new SqlBuilder(SqlBuilder.SqlTypeEnum.SELECT, "role")
-                .selectFor("*")
-                .whereLike("role_name", roleQueryCondition.getRoleName())
-                .whereLike("role_desc", roleQueryCondition.getRoleDesc())
-                .whereNotLess("create_time", roleQueryCondition.getCreateStartTime())
-                .whereNotGrater("create_time", roleQueryCondition.getCreateEndTime())
-                .whereNotLess("update_time", roleQueryCondition.getUpdateStartTime())
-                .whereNotGrater("update_time", roleQueryCondition.getUpdateEndTime())
-                .build();
-        return this.pageQuery(roleQueryCondition, page);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinDirect("where 1=1")
+                .joinLikeAround("and role_name", roleQueryCondition.getRoleName())
+                .joinLikeAround("and role_desc", roleQueryCondition.getRoleDesc())
+                .join("and role_desc", roleQueryCondition.getRoleDesc())
+                .join("and create_time>=", roleQueryCondition.getCreateStartTime())
+                .join("and create_time<=", roleQueryCondition.getCreateEndTime())
+                .join("and update_time>=", roleQueryCondition.getUpdateStartTime())
+                .join("and update_time<=", roleQueryCondition.getUpdateEndTime());
+        return this.queryForPaginationBean(page, Role.class, sqlBuilder);
     }
 }
