@@ -12,8 +12,9 @@ public interface SysUserService {
 
     public SysUser login(String username, String password);
 
-    public void save(SysUser user);
+    public SysUser save(SysUser user);
 
     public Page<SysUser> pageQuery(UserQueryCondition userQueryCondition, Page<SysUser> page) throws SQLException;
 
+    public void update(SysUser sysUser);
 }

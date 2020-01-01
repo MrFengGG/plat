@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Menu {
-    private int id;
+    private Integer id;
     @NotNull(message = "菜单代码不能为空!")
     private String code;
     @NotNull(message = "菜单类型不能为空!")

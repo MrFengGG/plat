@@ -2,7 +2,7 @@ package com.feng.plat.auth.service.impl;
 
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.validate.AssertUtil;
-import com.feng.home.plat.user.bean.condition.RoleQueryCondition;
+import com.feng.home.plat.auth.bean.condition.RoleQueryCondition;
 import com.feng.home.plat.auth.bean.Role;
 import com.feng.plat.auth.dao.RoleDao;
 import com.feng.plat.auth.service.RoleService;
@@ -39,5 +39,18 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public void saveAll(List<Role> roleList) {
         this.roleDao.saveBeanList(roleList);
+    }
+
+    @Override
+    public void updateRole(Role role) {
+        Optional<Role> roleOptional = roleDao.findById(role.getId(), Role.class);
+        AssertUtil.assertTrue(roleOptional.isPresent(), "要修改的角色不存在:" + role.getCode());
+        AssertUtil.assertFalse(roleOptional.get().getCode().equals(role.getCode()), "角色代码无法修改");
+        this.roleDao.updateById(role);
+    }
+
+    @Override
+    public void remove(String roleCode) {
+        this.roleDao.removeBy("code", roleCode);
     }
 }

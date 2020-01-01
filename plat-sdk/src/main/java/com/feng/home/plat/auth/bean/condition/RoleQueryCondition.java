@@ -1,4 +1,4 @@
-package com.feng.home.plat.user.bean.condition;
+package com.feng.home.plat.auth.bean.condition;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -29,9 +29,6 @@ public class SysUserServiceImpl implements SysUserService {
     private SysUserDao sysUserDao;
 
     @Autowired
-    private RoleService roleService;
-
-    @Autowired
     private UserRoleMappingDao userRoleMappingDao;
 
 
@@ -56,10 +53,11 @@ public class SysUserServiceImpl implements SysUserService {
         }).get();
     }
 
-    public void save(SysUser user) {
+    public SysUser save(SysUser user) {
         user.setPassword(PasswordUtil.encode(user.getPassword()));
         user.setStatus(UserStatusEnum.NORMAL.getCode());
         sysUserDao.saveBean(user);
+        return sysUserDao.findUserByUsername(user.getUsername()).orElse(null);
     }
 
     public Page<SysUser> pageQuery(UserQueryCondition userQueryCondition, Page<SysUser> page) throws SQLException {
@@ -77,5 +75,10 @@ public class SysUserServiceImpl implements SysUserService {
         }).collect(toList());
         page.setData(perfectUserList);
         return page;
+    }
+
+    @Override
+    public void update(SysUser sysUser) {
+        this.sysUserDao.updateById(sysUser);
     }
 }

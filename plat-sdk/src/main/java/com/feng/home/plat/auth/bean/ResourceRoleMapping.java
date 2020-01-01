@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ResourceRoleMapping {
-    private int id;
+    private Integer id;
     @NotNull(message = "角色代码不能为空!")
     private String roleCode;
     @NotNull(message = "资源id不能为空!")

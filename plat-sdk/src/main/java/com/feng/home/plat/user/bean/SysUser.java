@@ -16,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysUser {
-    private int id;
+    private Integer id;
     //用户名
     @NotNull(message = "用户名不能为空!")
     private String username;

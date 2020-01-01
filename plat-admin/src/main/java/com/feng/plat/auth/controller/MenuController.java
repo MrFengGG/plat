@@ -57,19 +57,22 @@ public class MenuController {
         return menuService.getMenuGroupListByRoleList(new ArrayList<>(contextUser.getRoleList()));
     }
 
-    @RequestMapping(value = "/save_or_update", method = RequestMethod.POST)
-    @ResourceMeta(code = "MENU-SAVE_OR_UPDATE", resourceName = "保存或修改菜单", url = "/menu/save_or_update", group = "plat")
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ResourceMeta(code = "MENU-SAVE", resourceName = "保存菜单", url = "/menu/save", group = "plat")
     public void save(@RequestBody Menu menu){
         ValidationUtil.validate(menu);
-        if(StringUtil.isEmpty(menu.getId())) {
-            menuService.save(menu);
-        }else {
-            menuService.updateMenu(menu);
-        }
+        menuService.save(menu);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ResourceMeta(code = "MENU-UPDATE", resourceName = "修改菜单", url = "/menu/update", group = "plat")
+    public void update(@RequestBody Menu menu){
+        ValidationUtil.validate(menu);
+        menuService.updateMenu(menu);
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    @ResourceMeta(code = "MENU-REMOVE", resourceName = "保存或修改菜单", url = "/menu/remove", group = "plat")
+    @ResourceMeta(code = "MENU-REMOVE", resourceName = "删除菜单", url = "/menu/remove", group = "plat")
     public void remove(@RequestBody Dict dict){
         String menuCode = dict.getStr("menuCode");
         Boolean recursion = dict.getBoolean("recursion");

@@ -4,7 +4,7 @@ import com.feng.home.common.jdbc.base.BaseMappingDao;
 import com.feng.home.common.jdbc.base.DaoMapping;
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.sql.SqlBuilder;
-import com.feng.home.plat.user.bean.condition.RoleQueryCondition;
+import com.feng.home.plat.auth.bean.condition.RoleQueryCondition;
 import com.feng.home.plat.auth.bean.Role;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;

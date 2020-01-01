@@ -1,7 +1,7 @@
 package com.feng.plat.auth.service;
 
 import com.feng.home.common.jdbc.pagination.Page;
-import com.feng.home.plat.user.bean.condition.RoleQueryCondition;
+import com.feng.home.plat.auth.bean.condition.RoleQueryCondition;
 import com.feng.home.plat.auth.bean.Role;
 
 import java.util.Collection;
@@ -18,4 +18,8 @@ public interface RoleService {
     public Page<Role> pageQuery(RoleQueryCondition queryCondition, Page<Role> page);
 
     public void saveAll(List<Role> roleList);
+
+    public void updateRole(Role role);
+
+    public void remove(String roleCode);
 }

@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role {
-    private int id;
+    private Integer id;
     @NotNull(message = "角色代码不能为空!")
     private String code;
     @NotNull(message = "角色名称不能为空!")

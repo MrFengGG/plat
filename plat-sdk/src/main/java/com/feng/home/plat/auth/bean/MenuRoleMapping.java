@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MenuRoleMapping {
-    private int id;
+    private Integer id;
     @NotNull(message = "角色代码不能为空!")
     private String roleCode;
     @NotNull(message = "菜单代码不能为空!")

@@ -33,8 +33,15 @@ public class UserController {
 
     @ResourceMeta(code = "USER-ADD", resourceName = "新增用户", url = "/user/save", group = "plat")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public void save(SysUser sysUser){
+    public SysUser save(SysUser sysUser){
         ValidationUtil.validate(sysUser);
-        sysUserService.save(sysUser);
+        return sysUserService.save(sysUser);
+    }
+
+    @ResourceMeta(code = "USER-UPDATE", resourceName = "修改用户", url = "/user/update", group = "plat")
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public void update(SysUser sysUser){
+        ValidationUtil.validate(sysUser);
+        sysUserService.update(sysUser);
     }
 }

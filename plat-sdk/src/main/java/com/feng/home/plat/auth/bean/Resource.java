@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class Resource {
     //资源id
-    private int id;
+    private Integer id;
     //资源代码
     @NotNull(message = "资源代码不能为空!")
     private String code;
