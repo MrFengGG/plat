@@ -80,6 +80,10 @@ public class MenuServiceImpl implements MenuService {
         if(StringUtil.isEmpty(menuCode)){
             throw new SampleBusinessException("菜单代码不能为空");
         }
+        Optional<MenuRoleMapping> menuRoleMappingOptional = this.MenuRoleMappingDao.findBy("code", menuCode, MenuRoleMapping.class);
+        if(menuRoleMappingOptional.isPresent()){
+            throw new SampleBusinessException("有与该菜单绑定的角色关系!");
+        }
         MenuQueryCondition menuQueryCondition = MenuQueryCondition.builder().parentCode(menuCode).build();
         List<Menu> childrenMenuList = jdbcMenuDao.query(menuQueryCondition);
         if(childrenMenuList.size() > 0 && !recursion){
@@ -97,16 +101,20 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public boolean updateMenu(Menu menu) {
+        Optional<Menu> targetMenuOptional = this.findById(menu.getId());
+        if(!targetMenuOptional.isPresent()){
+            throw new SampleBusinessException("要修改的菜单不存在!");
+        }
+        if(menu.getCode().equals(targetMenuOptional.get().getParentCode())){
+            throw new SampleBusinessException("不允许修改菜单代码!");
+        }
         menu.setUpdateTime(new Date());
         return jdbcMenuDao.updateById(menu) > 0;
     }
 
     private List<Menu> groupMenus(List<Menu> menus){
         List<Menu> rootMenus = menus.stream().filter(menu -> StringUtil.isEmpty(menu.getParentCode())).collect(toList());
-        return rootMenus.stream().map(rootMenu -> {
-            setChild(rootMenu, menus);
-            return rootMenu;
-        }).collect(toList());
+        return rootMenus.stream().peek(rootMenu -> setChild(rootMenu, menus)).collect(toList());
     }
 
     private void setChild(Menu root, List<Menu> menus){
