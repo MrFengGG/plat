@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * 会员->角色映射
@@ -19,4 +20,5 @@ public class UserRoleMapping {
     private String roleCode;
     @NotNull(message = "用户id不能为空!")
     private int userId;
+    private Date createTime;
 }

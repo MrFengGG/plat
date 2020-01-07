@@ -13,6 +13,8 @@ public interface RoleService {
 
     public Optional<Role> findByCode(String roleCode);
 
+    public List<Role> getAllRole();
+
     public List<Role> getListByCodeList(Collection<String> roleCodeList);
 
     public Page<Role> pageQuery(RoleQueryCondition queryCondition, Page<Role> page);
@@ -22,4 +24,6 @@ public interface RoleService {
     public void updateRole(Role role);
 
     public void remove(String roleCode);
+
+    public List<Role> getByMenuCode(String menuCode);
 }

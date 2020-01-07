@@ -1,19 +1,17 @@
 package com.feng.plat.user.controller;
 
+import com.feng.home.common.collection.Dict;
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.resource.annotation.ResourceMeta;
 import com.feng.home.common.validate.ValidationUtil;
 import com.feng.home.plat.user.bean.SysUser;
 import com.feng.home.plat.user.bean.condition.UserQueryCondition;
 import com.feng.plat.user.service.SysUserService;
-import org.springframework.http.HttpMethod;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.sql.SQLException;
+import java.util.Collection;
 
 @RestController
 @RequestMapping(value = "/user")
@@ -43,5 +41,13 @@ public class UserController {
     public void update(SysUser sysUser){
         ValidationUtil.validate(sysUser);
         sysUserService.update(sysUser);
+    }
+
+    @ResourceMeta(code = "USER-GIVE_ROLE", resourceName = "用户赋角色", url = "/user/give_role", group = "plat")
+    @RequestMapping(value = "/give_role", method = RequestMethod.POST)
+    public void giveRole(@RequestBody Dict dict){
+        Collection<String> roleList = dict.getCollection("roleList");
+        Integer userId = dict.getInt("userId");
+        sysUserService.giveRole(userId, roleList);
     }
 }

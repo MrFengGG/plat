@@ -14,8 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class RoleServiceImpl implements RoleService {
@@ -39,10 +42,17 @@ public class RoleServiceImpl implements RoleService {
     public Optional<Role> findByCode(String roleCode) {
         return roleDao.findByCode(roleCode);
     }
+
+    @Override
+    public List<Role> getAllRole() {
+        return roleDao.getAll();
+    }
+
     @Override
     public List<Role> getListByCodeList(Collection<String> roleCodeList) {
         return roleDao.getListByCodeList(roleCodeList);
     }
+
     @Override
     public Page<Role> pageQuery(RoleQueryCondition queryCondition, Page<Role> page) {
         return roleDao.pageQuery(queryCondition, page);
@@ -67,5 +77,12 @@ public class RoleServiceImpl implements RoleService {
         AssertUtil.assertFalse(menuRoleMappingOptional.isPresent(), "有绑定的菜单关系,无法删除");
         AssertUtil.assertFalse(UserRoleMappingOptional.isPresent(), "有绑定的用户关系,无法删除");
         this.roleDao.removeBy("code", roleCode);
+    }
+
+    @Override
+    public List<Role> getByMenuCode(String menuCode){
+        List<MenuRoleMapping> menuRoleMappingList = menuRoleMappingDao.getListByMenuCodeList(Stream.of(menuCode).collect(Collectors.toList()));
+        List<String> roleCodeList = menuRoleMappingList.stream().map(MenuRoleMapping::getRoleCode).collect(Collectors.toList());
+        return roleCodeList.size() > 0 ? getListByCodeList(roleCodeList) : new LinkedList<>();
     }
 }

@@ -5,6 +5,7 @@ import com.feng.home.plat.user.bean.condition.UserQueryCondition;
 import com.feng.home.plat.user.bean.SysUser;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public interface SysUserService {
@@ -17,4 +18,6 @@ public interface SysUserService {
     public Page<SysUser> pageQuery(UserQueryCondition userQueryCondition, Page<SysUser> page) throws SQLException;
 
     public void update(SysUser sysUser);
+
+    public void giveRole(Integer userId, List<String> roleList);
 }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -77,5 +78,13 @@ public class MenuController {
         String menuCode = dict.getStr("menuCode");
         Boolean recursion = dict.getBoolean("recursion");
         menuService.remove(menuCode, recursion);
+    }
+
+    @RequestMapping(value = "/give_role", method = RequestMethod.POST)
+    @ResourceMeta(code = "MENU-GIVE_ROLE", resourceName = "菜单限制角色访问", url = "/menu/give_role", group = "plat")
+    public void giveRole(@RequestBody Dict dict){
+        Collection<String>  roleList = dict.getCollection("roleList");
+        String menuCode = dict.getStr("menuCode");
+        menuService.giveMenuRoles(menuCode, roleList);
     }
 }

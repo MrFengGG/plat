@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/role")
@@ -46,5 +47,17 @@ public class RoleController {
     public void remove(@RequestBody Dict dict){
         String roleCode = dict.getStr("roleCode");
         roleService.remove(roleCode);
+    }
+
+    @RequestMapping(value = "/get_all", method = RequestMethod.POST)
+    @ResourceMeta(code = "ROLE-GET_ALL", resourceName = "查询所有角色", url = "/role/get_all", group = "plat")
+    public List<Role> allRoleList(){
+        return roleService.getAllRole();
+    }
+
+    @RequestMapping(value = "/get_menu_role_list", method = RequestMethod.POST)
+    @ResourceMeta(code = "ROLE-GET_MENU_ROLE_LIST", resourceName = "查询菜单所有角色", url = "/role/get_menu_role_list", group = "plat")
+    public List<Role> getMenuRoleList(String menuCode){
+        return roleService.getByMenuCode(menuCode);
     }
 }

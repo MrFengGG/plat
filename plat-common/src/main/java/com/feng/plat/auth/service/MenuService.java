@@ -4,6 +4,7 @@ import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.MenuGroup;
 import com.feng.home.plat.auth.bean.condition.MenuQueryCondition;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ public interface MenuService {
 
     public void save(Menu menu);
 
-    public void giveMenuRole(String menuCode, String roleCode);
+    public void giveMenuRoles(String menuCode, Collection<String> roleCodeList);
 
     public void remove(String code, Boolean recursion);
 

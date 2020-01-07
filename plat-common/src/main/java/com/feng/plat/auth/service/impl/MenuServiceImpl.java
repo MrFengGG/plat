@@ -3,10 +3,10 @@ package com.feng.plat.auth.service.impl;
 import com.feng.home.common.auth.AuthContext;
 import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.exception.SampleBusinessException;
-import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.MenuGroup;
 import com.feng.home.plat.auth.bean.MenuRoleMapping;
+import com.feng.home.plat.auth.bean.Role;
 import com.feng.home.plat.auth.bean.condition.MenuQueryCondition;
 import com.feng.plat.auth.dao.MenuDao;
 import com.feng.plat.auth.dao.MenuGroupDao;
@@ -17,9 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 @Service
 public class MenuServiceImpl implements MenuService {
@@ -59,7 +60,8 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<Menu> query(MenuQueryCondition condition) {
-        return groupMenus(jdbcMenuDao.query(condition));
+        List<Menu> menuList = jdbcMenuDao.query(condition);
+        return groupMenus(fillMenuWithRole(menuList));
     }
 
     @Override
@@ -68,11 +70,10 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public void giveMenuRole(String menuCode, String roleCode){
-        AssertUtil.assertTrue(jdbcMenuDao.findByCode(menuCode).isPresent(), "菜单不存在");
-        AssertUtil.assertTrue(roleDao.findByCode(roleCode).isPresent(), "角色不存在");
-        AssertUtil.assertFalse(MenuRoleMappingDao.findFirst(roleCode, menuCode).isPresent(), "菜单已有该权限");
-        MenuRoleMappingDao.saveBean(MenuRoleMapping.builder().menuCode(menuCode).roleCode(roleCode));
+    public void giveMenuRoles(String menuCode, Collection<String> roleCodeList){
+        MenuRoleMappingDao.removeBy("menu_code", menuCode);
+        List<MenuRoleMapping> roleMappingList = roleCodeList.stream().map(role -> MenuRoleMapping.builder().createTime(new Date()).menuCode(menuCode).roleCode(role).build()).collect(toList());
+        MenuRoleMappingDao.saveBeanList(roleMappingList);
     }
 
     @Override
@@ -110,6 +111,20 @@ public class MenuServiceImpl implements MenuService {
         }
         menu.setUpdateTime(new Date());
         return jdbcMenuDao.updateById(menu) > 0;
+    }
+
+    private List<Menu> fillMenuWithRole(List<Menu> menuList){
+        List<String> menuCodeList = menuList.stream().map(Menu::getCode).collect(toList());
+        List<MenuRoleMapping> menuRoleMappingList = MenuRoleMappingDao.getListByMenuCodeList(menuCodeList);
+        Map<String, List<MenuRoleMapping>> menuRoleCodeMapping = menuRoleMappingList.stream().collect(groupingBy(MenuRoleMapping::getMenuCode));
+        List<String> roleCodeList = menuRoleMappingList.stream().map(MenuRoleMapping::getRoleCode).collect(toList());
+        List<Role> roleList = roleDao.getListByCodeList(roleCodeList);
+        Map<String, Role> roleMapping = roleList.stream().collect(toMap(Role::getCode, Function.identity()));
+        return menuList.stream().peek(menu -> {
+            List<MenuRoleMapping> menuRoleMappings = menuRoleCodeMapping.getOrDefault(menu.getCode(), new LinkedList<>());
+            List<Role> menuRoleList = menuRoleMappings.stream().map(MenuRoleMapping::getRoleCode).map(roleMapping::get).collect(toList());
+            menu.setNeedRoles(menuRoleList);
+        }).collect(toList());
     }
 
     private List<Menu> groupMenus(List<Menu> menus){

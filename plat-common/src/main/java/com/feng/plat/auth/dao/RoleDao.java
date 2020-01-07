@@ -45,4 +45,9 @@ public class RoleDao extends BaseMappingDao{
                 .join("and update_time<=", roleQueryCondition.getUpdateEndTime());
         return this.queryForPaginationBean(page, Role.class, sqlBuilder);
     }
+
+    public List<Role> getAll(){
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable());
+        return this.queryForAllBean(Role.class, sqlBuilder);
+    }
 }

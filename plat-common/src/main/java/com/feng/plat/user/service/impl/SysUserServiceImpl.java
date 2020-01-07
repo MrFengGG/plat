@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
@@ -80,5 +77,12 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void update(SysUser sysUser) {
         this.sysUserDao.updateById(sysUser);
+    }
+
+    @Override
+    public void giveRole(Integer userId, List<String> roleList) {
+        userRoleMappingDao.removeBy("user_id", userId);
+        List<UserRoleMapping> userRoleMappingList = roleList.stream().map(roleCode -> UserRoleMapping.builder().createTime(new Date()).roleCode(roleCode).userId(userId).build()).collect(toList());
+        userRoleMappingDao.saveBeanList(userRoleMappingList);
     }
 }
