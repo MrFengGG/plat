@@ -20,6 +20,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class RoleServiceImpl implements RoleService {
 
@@ -34,8 +36,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void saveRole(Role role) {
+        Optional<Role> existParentRole = this.findByCode(role.getParentCode());
+        AssertUtil.assertTrue(existParentRole.isPresent(),"父级权限不存在!");
         Optional<Role> existRole = this.findByCode(role.getCode());
-        AssertUtil.assertFalse(existRole.isPresent(),"权限已存在");
+        AssertUtil.assertFalse(existRole.isPresent(),"要添加的权限已存在");
         roleDao.saveBean(role);
     }
     @Override
@@ -84,5 +88,13 @@ public class RoleServiceImpl implements RoleService {
         List<MenuRoleMapping> menuRoleMappingList = menuRoleMappingDao.getListByMenuCodeList(Stream.of(menuCode).collect(Collectors.toList()));
         List<String> roleCodeList = menuRoleMappingList.stream().map(MenuRoleMapping::getRoleCode).collect(Collectors.toList());
         return roleCodeList.size() > 0 ? getListByCodeList(roleCodeList) : new LinkedList<>();
+    }
+
+    @Override
+    public List<Role> getByUserId(Integer userId) {
+        List<UserRoleMapping> userRoleMappings = userRoleMappingDao.getUserRoleMappingListByUserId(userId);
+        List<String> roleCodeList = userRoleMappings.stream().map(UserRoleMapping::getRoleCode).collect(toList());
+        List<Role> roleList = roleDao.getListByCodeList(roleCodeList);
+        return roleList;
     }
 }

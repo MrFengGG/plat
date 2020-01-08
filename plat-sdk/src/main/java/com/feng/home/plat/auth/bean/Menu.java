@@ -40,6 +40,12 @@ public class Menu {
 
     private Integer priority;
 
+    //树路径
+    private String treePath;
+
+    //树深度
+    private int treeDepth;
+
     @NoConvertField
     private List<Role> needRoles;
 

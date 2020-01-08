@@ -5,7 +5,7 @@ plus:
         driverClassName: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://122.51.38.127:3306/home_plat?serverTimezone=UTC
         username: root
-        password: abc*123
+        password: ***
     enable-sharding: true
     default-data-source: datasource1
 eureka:
@@ -19,7 +19,6 @@ server:
   port: 9000
 resource:
   check-token-url: http://127.0.0.1:9000/auth/check_token
-  login-url: http://www.baidu.com
   white-list-role:
     - S_ADMIN
 spring:

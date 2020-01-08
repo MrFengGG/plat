@@ -11,7 +11,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @Component
-@DaoMapping(logicTable = "menu_group")
+@DaoMapping(logicTable = "sys_menu_group")
 public class MenuGroupDao extends BaseMappingDao{
     @Resource
     @Override

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@DaoMapping(logicTable = "menu")
+@DaoMapping(logicTable = "sys_menu")
 public class MenuDao extends BaseMappingDao{
 
     @Override

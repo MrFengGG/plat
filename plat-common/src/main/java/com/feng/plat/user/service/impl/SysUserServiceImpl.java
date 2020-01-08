@@ -3,8 +3,8 @@ package com.feng.plat.user.service.impl;
 import com.feng.home.common.common.PasswordUtil;
 import com.feng.home.common.exception.SampleBusinessException;
 import com.feng.home.common.jdbc.pagination.Page;
+import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.plat.user.enums.UserStatusEnum;
-import com.feng.plat.auth.service.RoleService;
 import com.feng.home.plat.user.bean.SysUser;
 import com.feng.home.plat.user.bean.condition.UserQueryCondition;
 import com.feng.home.plat.user.bean.UserRoleMapping;
@@ -44,6 +44,8 @@ public class SysUserServiceImpl implements SysUserService {
         if(!sysUser.isPresent() || !PasswordUtil.match(password, sysUser.get().getPassword())){
             throw new SampleBusinessException("账户不存在或密码错误");
         }
+        Optional<Date> expireEndTime = sysUser.map(SysUser::getExpireEndTime);
+        AssertUtil.assertFalse(expireEndTime.map(new Date()::before).orElse(false), "该账号在封禁中");
         return sysUser.map(user -> {
             user.setPassword("*");
             return user;
@@ -80,9 +82,19 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public void giveRole(Integer userId, List<String> roleList) {
+    public void giveRole(Integer userId, Collection<String> roleList) {
         userRoleMappingDao.removeBy("user_id", userId);
         List<UserRoleMapping> userRoleMappingList = roleList.stream().map(roleCode -> UserRoleMapping.builder().createTime(new Date()).roleCode(roleCode).userId(userId).build()).collect(toList());
         userRoleMappingDao.saveBeanList(userRoleMappingList);
+    }
+
+    @Override
+    public void freeze(Integer userId, Date startTime, Date endTime) {
+        SysUser sysUser =
+    }
+
+    @Override
+    public void invalid(Integer userId) {
+
     }
 }

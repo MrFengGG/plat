@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@DaoMapping(logicTable = "user_role")
+@DaoMapping(logicTable = "sys_user_role")
 public class UserRoleMappingDao extends BaseMappingDao {
 
     public List<UserRoleMapping> getUserRoleMappingListByUserId(int user_id) {

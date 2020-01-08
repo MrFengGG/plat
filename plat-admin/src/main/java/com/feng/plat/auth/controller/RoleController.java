@@ -1,7 +1,6 @@
 package com.feng.plat.auth.controller;
 
 import com.feng.home.common.collection.Dict;
-import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.resource.annotation.ResourceMeta;
 import com.feng.home.common.utils.RequestUtils;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -49,15 +49,21 @@ public class RoleController {
         roleService.remove(roleCode);
     }
 
-    @RequestMapping(value = "/get_all", method = RequestMethod.POST)
+    @RequestMapping(value = "/get_all", method = RequestMethod.GET)
     @ResourceMeta(code = "ROLE-GET_ALL", resourceName = "查询所有角色", url = "/role/get_all", group = "plat")
     public List<Role> allRoleList(){
         return roleService.getAllRole();
     }
 
-    @RequestMapping(value = "/get_menu_role_list", method = RequestMethod.POST)
+    @RequestMapping(value = "/get_menu_role_list", method = RequestMethod.GET)
     @ResourceMeta(code = "ROLE-GET_MENU_ROLE_LIST", resourceName = "查询菜单所有角色", url = "/role/get_menu_role_list", group = "plat")
-    public List<Role> getMenuRoleList(String menuCode){
+    public List<Role> getMenuRoleList(@NotNull String menuCode){
         return roleService.getByMenuCode(menuCode);
+    }
+
+    @RequestMapping(value = "/get_user_role_list", method = RequestMethod.GET)
+    @ResourceMeta(code = "ROLE-GET_USER_ROLE_LIST", resourceName = "查询用户所有角色", url = "/role/get_user_role_list", group = "plat")
+    public List<Role> getUserRoleList(@NotNull Integer userId){
+        return roleService.getByUserId(userId);
     }
 }

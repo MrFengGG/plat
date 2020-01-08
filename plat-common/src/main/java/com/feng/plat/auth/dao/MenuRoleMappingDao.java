@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@DaoMapping(logicTable = "menu_role")
+@DaoMapping(logicTable = "sys_menu_role")
 public class MenuRoleMappingDao extends BaseMappingDao{
 
     @Override

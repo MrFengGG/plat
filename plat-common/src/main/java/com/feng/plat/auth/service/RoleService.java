@@ -26,4 +26,6 @@ public interface RoleService {
     public void remove(String roleCode);
 
     public List<Role> getByMenuCode(String menuCode);
+
+    public List<Role> getByUserId(Integer userId);
 }

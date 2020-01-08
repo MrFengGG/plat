@@ -1,5 +1,6 @@
 package com.feng.plat.auth.dao;
 
+import com.feng.home.common.auth.AuthContext;
 import com.feng.home.common.jdbc.base.BaseMappingDao;
 import com.feng.home.common.jdbc.base.DaoMapping;
 import com.feng.home.common.jdbc.pagination.Page;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@DaoMapping(logicTable = "role")
+@DaoMapping(logicTable = "sys_role")
 public class RoleDao extends BaseMappingDao{
 
     @Resource
@@ -30,7 +31,7 @@ public class RoleDao extends BaseMappingDao{
     }
 
     public List<Role> getListByCodeList(Collection<String> roleCodeList) {
-        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinIn("where code=", roleCodeList);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinIn("where code", roleCodeList);
         return this.queryForAllBean(Role.class, sqlBuilder);
     }
 
@@ -42,12 +43,14 @@ public class RoleDao extends BaseMappingDao{
                 .join("and create_time>=", roleQueryCondition.getCreateStartTime())
                 .join("and create_time<=", roleQueryCondition.getCreateEndTime())
                 .join("and update_time>=", roleQueryCondition.getUpdateStartTime())
-                .join("and update_time<=", roleQueryCondition.getUpdateEndTime());
+                .join("and update_time<=", roleQueryCondition.getUpdateEndTime())
+                .joinDirect("and user_type > ?", AuthContext.getContextUser().getExtend().getInt("user_type"));
         return this.queryForPaginationBean(page, Role.class, sqlBuilder);
     }
 
     public List<Role> getAll(){
-        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable());
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable())
+                .joinDirect("where user_type > ?", AuthContext.getContextUser().getExtend().getInt("user_type"));;
         return this.queryForAllBean(Role.class, sqlBuilder);
     }
 }

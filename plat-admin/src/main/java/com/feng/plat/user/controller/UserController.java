@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/user")
 public class UserController {
+
     @Resource
     private SysUserService sysUserService;
 
@@ -49,5 +51,13 @@ public class UserController {
         Collection<String> roleList = dict.getCollection("roleList");
         Integer userId = dict.getInt("userId");
         sysUserService.giveRole(userId, roleList);
+    }
+
+    @ResourceMeta(code = "USER-FREEZE", resourceName = "冻结用户", url = "/user/freeze", group = "plat")
+    @RequestMapping(value = "/freeze", method = RequestMethod.POST)
+    public void freeze(@RequestBody Dict dict){
+        Date endTime = dict.getOrDefault("endTime", Date.class, new Date());
+        Integer userId = dict.getInt("userId");
+        sysUserService.freeze(userId, new Date(), endTime);
     }
 }

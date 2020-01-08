@@ -52,6 +52,8 @@ public class SysUser {
     private String wxOpenId;
     //账号状态
     private Integer status;
+    //用户类型
+    private Integer userType;
     //权限
     @NoConvertField
     private Collection<String> roles;
