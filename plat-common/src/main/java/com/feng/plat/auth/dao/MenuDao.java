@@ -1,10 +1,13 @@
 package com.feng.plat.auth.dao;
 
 import com.feng.home.common.collection.CollectionUtils;
+import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.enums.Binary;
+import com.feng.home.common.exception.SampleBusinessException;
 import com.feng.home.common.jdbc.base.BaseMappingDao;
 import com.feng.home.common.jdbc.base.DaoMapping;
 import com.feng.home.common.sql.SqlBuilder;
+import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.condition.MenuQueryCondition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +44,6 @@ public class MenuDao extends BaseMappingDao{
         return this.query(condition);
     }
 
-    public List<Menu> getListByCodeList(List<String> menuCodeList){
-        MenuQueryCondition condition = MenuQueryCondition.builder().menuCodeList(menuCodeList)
-                .build();
-        return this.query(condition);
-    }
-
     public List<Menu> getEnableList(){
         SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable())
                 .joinDirect("where enable=?", 1)
@@ -58,8 +55,12 @@ public class MenuDao extends BaseMappingDao{
         return this.findBy("code", Menu.class, this.getTable(), code);
     }
 
-    public int removeByCode(Collection<String> codeList){
-        return this.remove("code", codeList.toArray(), this.getTable());
+    public int removeByPath(String path){
+        if(StringUtil.isEmpty(path)){
+            throw new SampleBusinessException("路径为空,无法删除");
+        }
+        SqlBuilder sqlBuilder = SqlBuilder.init("delete from").joinDirect(this.getTable()).joinLikeAfter("where tree_path", path);
+        return this.update(sqlBuilder);
     }
 
     public List<Menu> query(MenuQueryCondition condition){

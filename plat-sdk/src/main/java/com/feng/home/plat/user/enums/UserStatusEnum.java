@@ -1,7 +1,8 @@
 package com.feng.home.plat.user.enums;
 
 public enum UserStatusEnum {
-    NORMAL(0,"正常","");
+    NORMAL(1,"正常",""),
+    INVALID(0,"失效","");
     private int code;
 
     private String name;

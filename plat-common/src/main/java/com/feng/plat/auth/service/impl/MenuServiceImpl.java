@@ -3,6 +3,7 @@ package com.feng.plat.auth.service.impl;
 import com.feng.home.common.auth.AuthContext;
 import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.exception.SampleBusinessException;
+import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.MenuGroup;
 import com.feng.home.plat.auth.bean.MenuRoleMapping;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
@@ -66,6 +66,20 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public void save(Menu menu){
+        String parentCode = menu.getParentCode();
+        AssertUtil.assertFalse(jdbcMenuDao.findByCode(menu.getCode()).isPresent(),"菜单已存在");
+        if(StringUtil.isNotEmpty(parentCode)){
+            Optional<Menu> parentMenuOptional = jdbcMenuDao.findByCode(parentCode);
+            AssertUtil.assertTrue(parentMenuOptional.isPresent(), "父级菜单不存在");
+            Menu parentMenu = parentMenuOptional.get();
+            String nowPath = parentMenu.getTreePath() + "/" + menu.getCode();
+            int menuDeep = parentMenu.getTreeDepth() + 1;
+            menu.setTreePath(nowPath);
+            menu.setTreeDepth(menuDeep);
+        }else{
+            menu.setTreePath("/" + menu.getCode());
+            menu.setTreeDepth(0);
+        }
         jdbcMenuDao.saveBean(menu);
     }
 
@@ -77,22 +91,15 @@ public class MenuServiceImpl implements MenuService {
     }
 
     @Override
-    public void remove(String menuCode, Boolean recursion){
+    public void remove(String menuCode){
         if(StringUtil.isEmpty(menuCode)){
             throw new SampleBusinessException("菜单代码不能为空");
         }
-        Optional<MenuRoleMapping> menuRoleMappingOptional = this.MenuRoleMappingDao.findBy("code", menuCode, MenuRoleMapping.class);
-        if(menuRoleMappingOptional.isPresent()){
-            throw new SampleBusinessException("有与该菜单绑定的角色关系!");
+        Optional<Menu> menuOptional = jdbcMenuDao.findByCode(menuCode);
+        if(!menuOptional.isPresent()){
+            throw new SampleBusinessException("菜单不存在");
         }
-        MenuQueryCondition menuQueryCondition = MenuQueryCondition.builder().parentCode(menuCode).build();
-        List<Menu> childrenMenuList = jdbcMenuDao.query(menuQueryCondition);
-        if(childrenMenuList.size() > 0 && !recursion){
-            throw new SampleBusinessException("该菜单包含子节点!");
-        }
-        List<String> deleteMenuCode = Stream.of(menuCode).collect(toList());
-        deleteMenuCode.addAll(childrenMenuList.stream().map(Menu::getCode).collect(toList()));
-        this.jdbcMenuDao.removeByCode(deleteMenuCode);
+        this.jdbcMenuDao.removeByPath(menuOptional.get().getTreePath());
     }
 
     @Override

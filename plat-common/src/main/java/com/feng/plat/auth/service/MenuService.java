@@ -19,7 +19,7 @@ public interface MenuService {
 
     public void giveMenuRoles(String menuCode, Collection<String> roleCodeList);
 
-    public void remove(String code, Boolean recursion);
+    public void remove(String code);
 
     public Optional<Menu> findById(Integer id);
 

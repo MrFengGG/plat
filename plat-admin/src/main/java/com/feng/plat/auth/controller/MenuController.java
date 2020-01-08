@@ -76,8 +76,7 @@ public class MenuController {
     @ResourceMeta(code = "MENU-REMOVE", resourceName = "删除菜单", url = "/menu/remove", group = "plat")
     public void remove(@RequestBody Dict dict){
         String menuCode = dict.getStr("menuCode");
-        Boolean recursion = dict.getBoolean("recursion");
-        menuService.remove(menuCode, recursion);
+        menuService.remove(menuCode);
     }
 
     @RequestMapping(value = "/give_role", method = RequestMethod.POST)
