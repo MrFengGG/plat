@@ -90,7 +90,10 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void freeze(Integer userId, Date startTime, Date endTime) {
-        SysUser sysUser =
+        SysUser sysUser = sysUserDao.findById(userId, SysUser.class).orElseThrow(() -> new SampleBusinessException("用户不存在"));
+        sysUser.setExpireStartTime(new Date());
+        sysUser.setExpireEndTime(endTime);
+        sysUserDao.saveBean(sysUser);
     }
 
     @Override
