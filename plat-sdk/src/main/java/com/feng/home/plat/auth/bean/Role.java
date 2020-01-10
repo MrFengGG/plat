@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -31,5 +32,6 @@ public class Role {
     //更新时间
     private Date updateTime;
     //角色类型0:超级管理员角色,1:管理员角色,2:普通用户角色
+    @Min(value = 1, message = "非法的角色类型")
     private int roleType;
 }

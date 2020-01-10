@@ -1,12 +1,15 @@
 package com.feng.home.plat.user.bean;
 
 import com.feng.home.common.bean.NoConvertField;
+import com.feng.home.plat.auth.enums.SysDataTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Date;
@@ -53,7 +56,8 @@ public class SysUser {
     //账号状态
     private Integer status;
     //用户类型
-    private Integer userType;
+    @Min(value = 1, message = "非法的用户类型")
+    private Integer userType = SysDataTypeEnum.NORMAL.getCode();
     //权限
     @NoConvertField
     private Collection<String> roles;
