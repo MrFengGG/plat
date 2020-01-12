@@ -21,7 +21,7 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    @RequestMapping(value = "/pagination_query", method = RequestMethod.POST)
+    @RequestMapping(value = "/pagination_query", method = RequestMethod.GET)
     @ResourceMeta(code = "ROLE-PAGINATION_QUERY", resourceName = "分页查询角色", url = "/role/pagination_query", group = "plat")
     public Page<Role> paginationQuery(RoleQueryCondition roleQueryCondition, HttpServletRequest request){
         Page<Role> page = RequestUtils.getPage(request);

@@ -19,7 +19,7 @@ public class Menu {
     @NotNull(message = "菜单代码不能为空!")
     private String code;
     @NotNull(message = "菜单类型不能为空!")
-    private int menuType;
+    private Integer menuType;
     @NotNull(message = "所属菜单组不能为空")
     private String menuGroupCode;
 
@@ -44,7 +44,7 @@ public class Menu {
     private String treePath;
 
     //树深度
-    private int treeDepth;
+    private Integer treeDepth;
 
     @NoConvertField
     private List<Role> needRoles;

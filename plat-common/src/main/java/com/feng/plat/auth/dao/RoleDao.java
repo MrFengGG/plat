@@ -1,6 +1,7 @@
 package com.feng.plat.auth.dao;
 
 import com.feng.home.common.auth.AuthContext;
+import com.feng.home.common.auth.bean.ContextUser;
 import com.feng.home.common.jdbc.base.BaseMappingDao;
 import com.feng.home.common.jdbc.base.DaoMapping;
 import com.feng.home.common.jdbc.pagination.Page;
@@ -44,7 +45,7 @@ public class RoleDao extends BaseMappingDao{
                 .join("and create_time<=", roleQueryCondition.getCreateEndTime())
                 .join("and update_time>=", roleQueryCondition.getUpdateStartTime())
                 .join("and update_time<=", roleQueryCondition.getUpdateEndTime())
-                .joinDirect("and user_type > ?", AuthContext.getContextUser().getExtend().getInt("user_type"));
+                .joinDirect("and role_type > ?", AuthContext.getContextUser().getExtend().getInt("userType"));
         return this.queryForPaginationBean(page, Role.class, sqlBuilder);
     }
 
