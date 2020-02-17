@@ -7,14 +7,12 @@ import com.feng.home.common.exception.SampleBusinessException;
 import com.feng.home.common.jdbc.base.BaseMappingDao;
 import com.feng.home.common.jdbc.base.DaoMapping;
 import com.feng.home.common.sql.SqlBuilder;
-import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.condition.MenuQueryCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +66,7 @@ public class MenuDao extends BaseMappingDao{
         SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable())
                 .joinDirect("where 1=1").joinLikeAround("and menu_name", condition.getMenuName())
                 .joinLikeAround("and menu_path", condition.getMenuPath())
+                .joinIn("and code", condition.getMenuCodeList())
                 .join("and create_time >= ", CollectionUtils.safeGet(timeTuple,0))
                 .join("and create_time <= ", CollectionUtils.safeGet(timeTuple,1))
                 .join("and enable =?", condition.getEnable())

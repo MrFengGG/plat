@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.sql.SQLException;
 import java.util.Optional;
 
 @Component
@@ -39,7 +38,7 @@ public class SysUserDao extends BaseMappingDao {
                 .joinIn("and status", userQueryCondition.getStatusList())
                 .join("and create_time>=?", userQueryCondition.getRegisterStartTime())
                 .join("and create_time<=?", userQueryCondition.getRegisterEndTime())
-                .joinDirect("and user_type > ?", AuthContext.getContextUser().getExtend().getInt("user_type"));
+                .joinDirect("and user_type > ?", AuthContext.getContextUser().getExtend().getInt("userType"));
         return this.queryForPaginationBean(page, SysUser.class, sqlBuilder);
     }
 

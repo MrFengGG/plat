@@ -1,5 +1,7 @@
 package com.feng.plat.user.service.impl;
 
+import com.feng.home.common.auth.AuthContext;
+import com.feng.home.common.auth.bean.ContextUser;
 import com.feng.home.common.common.PasswordUtil;
 import com.feng.home.common.exception.SampleBusinessException;
 import com.feng.home.common.jdbc.pagination.Page;
@@ -13,7 +15,9 @@ import com.feng.plat.user.dao.UserRoleMappingDao;
 import com.feng.plat.user.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,6 +43,11 @@ public class SysUserServiceImpl implements SysUserService {
         });
     }
 
+    @Override
+    public Optional<SysUser> findById(Integer id) {
+        return sysUserDao.findById(id, SysUser.class);
+    }
+
     public SysUser login(String username, String password) {
         Optional<SysUser> sysUser = findByUsername(username);
         if(!sysUser.isPresent() || !PasswordUtil.match(password, sysUser.get().getPassword())){
@@ -46,15 +55,19 @@ public class SysUserServiceImpl implements SysUserService {
         }
         Optional<Date> expireEndTime = sysUser.map(SysUser::getExpireEndTime);
         AssertUtil.assertFalse(expireEndTime.map(new Date()::before).orElse(false), "该账号在封禁中");
-        return sysUser.map(user -> {
-            user.setPassword("*");
-            return user;
-        }).get();
+        SysUser containsUser = sysUser.get();
+
+        containsUser.setLastLoginTime(new Date());
+        containsUser.setLastLoginIp(AuthContext.getRequest().getRemoteAddr());
+        update(containsUser);
+        containsUser.setPassword("***");
+        return containsUser;
     }
 
     public SysUser save(SysUser user) {
         user.setPassword(PasswordUtil.encode(user.getPassword()));
         user.setStatus(UserStatusEnum.NORMAL.getCode());
+        user.setCreateTime(new Date());
         sysUserDao.saveBean(user);
         return sysUserDao.findUserByUsername(user.getUsername()).orElse(null);
     }
@@ -67,7 +80,7 @@ public class SysUserServiceImpl implements SysUserService {
 
         Map<Integer, List<UserRoleMapping>> mappingMap = userRoleMappingList.stream().collect(groupingBy(UserRoleMapping::getUserId));
         List<SysUser> perfectUserList = pageData.getData().stream().map(sysUser -> {
-            Collection<String> userRoles = mappingMap.get(sysUser.getId()).stream().map(UserRoleMapping::getRoleCode).collect(toList());
+            Collection<String> userRoles = mappingMap.getOrDefault(sysUser.getId(), new LinkedList<>()).stream().map(UserRoleMapping::getRoleCode).collect(toList());
             sysUser.setRoles(userRoles);
             sysUser.setPassword("*");
             return sysUser;
@@ -78,6 +91,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void update(SysUser sysUser) {
+        sysUser.setUpdateTime(new Date());
         this.sysUserDao.updateById(sysUser);
     }
 

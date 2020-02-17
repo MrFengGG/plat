@@ -3,7 +3,9 @@ package com.feng.plat.auth.controller;
 import com.feng.home.common.auth.AuthContext;
 import com.feng.home.common.auth.bean.ContextUser;
 import com.feng.home.common.collection.Dict;
+import com.feng.home.common.common.StringUtil;
 import com.feng.home.common.resource.annotation.ResourceMeta;
+import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.common.validate.ValidationUtil;
 import com.feng.home.plat.auth.bean.Menu;
 import com.feng.home.plat.auth.bean.MenuGroup;
@@ -27,6 +29,7 @@ public class MenuController {
 
     @Resource
     private MenuService menuService;
+
 
     @RequestMapping(value = "/get_user_menu", method = RequestMethod.GET)
     @ResourceMeta(code = "MENU-GET_USER_MENU", resourceName = "查询用户可访问菜单", url = "/menu/get_user_menu", group = "plat")
@@ -81,6 +84,13 @@ public class MenuController {
     public void giveRole(@RequestBody Dict dict){
         Collection<String>  roleList = dict.getCollection("roleList");
         String menuCode = dict.getStr("menuCode");
+        AssertUtil.assertTrue(StringUtil.isNotEmpty(menuCode),"菜单代码不能为空");
         menuService.giveMenuRoles(menuCode, roleList);
+    }
+
+    @RequestMapping(value = "/get_role", method = RequestMethod.GET)
+    @ResourceMeta(code = "MENU-GET_ROLE", resourceName = "获取菜单角色", url = "/menu/get_role", group = "plat")
+    public List<String> getRoleByMenu(String menuCode){
+        return menuService.getMenuRole(menuCode);
     }
 }

@@ -7,11 +7,12 @@ import com.feng.home.plat.user.bean.SysUser;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 public interface SysUserService {
     public Optional<SysUser> findByUsername(String username);
+
+    public Optional<SysUser> findById(Integer id);
 
     public SysUser login(String username, String password);
 
@@ -26,4 +27,5 @@ public interface SysUserService {
     public void freeze(Integer userId, Date startTime, Date endTime);
 
     public void invalid(Integer userId);
+
 }

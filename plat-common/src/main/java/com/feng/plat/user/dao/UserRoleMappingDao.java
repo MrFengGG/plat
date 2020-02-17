@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 @DaoMapping(logicTable = "sys_user_role")

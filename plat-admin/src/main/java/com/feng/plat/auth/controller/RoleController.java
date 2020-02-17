@@ -4,9 +4,11 @@ import com.feng.home.common.collection.Dict;
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.resource.annotation.ResourceMeta;
 import com.feng.home.common.utils.RequestUtils;
+import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.common.validate.ValidationUtil;
 import com.feng.home.plat.auth.bean.Role;
 import com.feng.home.plat.auth.bean.condition.RoleQueryCondition;
+import com.feng.home.plat.auth.enums.SysDataTypeEnum;
 import com.feng.plat.auth.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +33,8 @@ public class RoleController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResourceMeta(code = "ROLE-SAVE", resourceName = "保存角色", url = "/role/save", group = "plat")
     public void save(@RequestBody Role role){
+        //临时处理
+        role.setRoleType(SysDataTypeEnum.NORMAL.getCode());
         ValidationUtil.validate(role);
         this.roleService.saveRole(role);
     }
@@ -46,6 +50,7 @@ public class RoleController {
     @ResourceMeta(code = "ROLE-REMOVE", resourceName = "删除角色", url = "/role/remove", group = "plat")
     public void remove(@RequestBody Dict dict){
         String roleCode = dict.getStr("roleCode");
+        AssertUtil.assertNotNull(roleCode, "角色代码不能为空");
         roleService.remove(roleCode);
     }
 

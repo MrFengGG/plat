@@ -24,4 +24,6 @@ public interface MenuService {
     public Optional<Menu> findById(Integer id);
 
     public boolean updateMenu(Menu menu);
+
+    public List<String> getMenuRole(String menuCode);
 }

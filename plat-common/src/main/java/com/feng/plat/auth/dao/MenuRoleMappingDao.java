@@ -28,7 +28,7 @@ public class MenuRoleMappingDao extends BaseMappingDao{
     }
 
     public List<MenuRoleMapping> getListByMenuCodeList(Collection<String> menuCodeList){
-        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinIn("where role_code", menuCodeList);
+        SqlBuilder sqlBuilder = SqlBuilder.init("select * from").joinDirect(this.getTable()).joinIn("where menu_code", menuCodeList);
         return this.queryForAllBean(MenuRoleMapping.class, sqlBuilder);
     }
 

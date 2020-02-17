@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
@@ -35,7 +36,7 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<Menu> getListByRoleList(String group, List<String> roleCodeList){
-        List<Menu> menuList = new LinkedList<>();
+        List<Menu> menuList;
         if(AuthContext.currentUserInWhiteList()) {
             menuList = jdbcMenuDao.getEnableList();
         }else{
@@ -86,7 +87,8 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public void giveMenuRoles(String menuCode, Collection<String> roleCodeList){
         MenuRoleMappingDao.removeBy("menu_code", menuCode);
-        List<MenuRoleMapping> roleMappingList = roleCodeList.stream().map(role -> MenuRoleMapping.builder().createTime(new Date()).menuCode(menuCode).roleCode(role).build()).collect(toList());
+        List<MenuRoleMapping> roleMappingList = roleCodeList.stream().map(role -> MenuRoleMapping.builder()
+                .createTime(new Date()).menuCode(menuCode).roleCode(role).build()).collect(toList());
         MenuRoleMappingDao.saveBeanList(roleMappingList);
     }
 
@@ -118,6 +120,12 @@ public class MenuServiceImpl implements MenuService {
         }
         menu.setUpdateTime(new Date());
         return jdbcMenuDao.updateById(menu) > 0;
+    }
+
+    @Override
+    public List<String> getMenuRole(String menuCode) {
+        return MenuRoleMappingDao.getListByMenuCodeList(Stream.of(menuCode).collect(toList())).stream()
+                .map(MenuRoleMapping::getRoleCode).collect(toList());
     }
 
     private List<Menu> fillMenuWithRole(List<Menu> menuList){

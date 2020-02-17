@@ -19,8 +19,6 @@ public interface RoleService {
 
     public Page<Role> pageQuery(RoleQueryCondition queryCondition, Page<Role> page);
 
-    public void saveAll(List<Role> roleList);
-
     public void updateRole(Role role);
 
     public void remove(String roleCode);

@@ -24,7 +24,6 @@ public class SysUser {
     @NotNull(message = "用户名不能为空!")
     private String username;
     //密码
-    @NotNull(message = "密码不能为空!")
     private String password;
     //名字
     private String realName;

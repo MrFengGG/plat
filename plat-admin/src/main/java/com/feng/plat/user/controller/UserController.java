@@ -1,8 +1,10 @@
 package com.feng.plat.user.controller;
 
 import com.feng.home.common.collection.Dict;
+import com.feng.home.common.exception.SampleBusinessException;
 import com.feng.home.common.jdbc.pagination.Page;
 import com.feng.home.common.resource.annotation.ResourceMeta;
+import com.feng.home.common.validate.AssertUtil;
 import com.feng.home.common.validate.ValidationUtil;
 import com.feng.home.plat.user.bean.SysUser;
 import com.feng.home.plat.user.bean.condition.UserQueryCondition;
@@ -31,16 +33,24 @@ public class UserController {
         return sysUserService.pageQuery(userQueryCondition, page);
     }
 
+    @ResourceMeta(code = "USER-GET", resourceName = "单个用户查询", url = "/user/get", group = "plat")
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    public SysUser get(Integer userId){
+        AssertUtil.assertNotNull(userId, "用户ID不能为空");
+        return sysUserService.findById(userId).orElse(null);
+    }
+
     @ResourceMeta(code = "USER-ADD", resourceName = "新增用户", url = "/user/save", group = "plat")
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public SysUser save(SysUser sysUser){
+    public SysUser save(@RequestBody SysUser sysUser){
         ValidationUtil.validate(sysUser);
+        sysUser.setPassword("000000");
         return sysUserService.save(sysUser);
     }
 
     @ResourceMeta(code = "USER-UPDATE", resourceName = "修改用户", url = "/user/update", group = "plat")
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public void update(SysUser sysUser){
+    public void update(@RequestBody SysUser sysUser){
         ValidationUtil.validate(sysUser);
         sysUserService.update(sysUser);
     }
